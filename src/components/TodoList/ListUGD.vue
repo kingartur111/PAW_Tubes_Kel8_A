@@ -13,13 +13,18 @@
         ></v-text-field>
         <v-spacer></v-spacer>
         <v-select
-          :todos="todos.priority"
-          label="Outlined style"
-          outlined
+          :items="filter"
+          v-model="selected"
+          label="Priority"
+          required
         ></v-select>
         <v-btn color="success" dark @click="dialog = true"> Tambah </v-btn>
       </v-card-title>
-      <v-data-table :headers="headers" :items="todos" :search="search">
+      <v-data-table
+        :headers="headers"
+        :items="todos"
+        :search="search || selected"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             small
@@ -99,6 +104,8 @@ export default {
       index: null,
       isEdited: false,
       tambah: true,
+      filter: ["Penting", "Biasa", "Tidak penting"],
+      selected: "",
       headers: [
         {
           text: "Task",
@@ -134,6 +141,13 @@ export default {
       },
     };
   },
+  computed: {
+    filteredPriority: function () {
+      return this.todos.filter((todo) => {
+        return todo.priority.toLowerCase().match(this.selected.toLowerCase());
+      });
+    },
+  },
   methods: {
     save() {
       if (this.isEdited == false || this.tambah == true) {
@@ -168,6 +182,9 @@ export default {
     },
     deleteItem(item) {
       this.todos.splice(this.todos.indexOf(item), 1);
+    },
+    filterByPriority(selected) {
+      return todos.indexOf(selected);
     },
   },
 };
