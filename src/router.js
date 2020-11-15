@@ -14,7 +14,6 @@ const router = new VueRouter({
     routes: [
         {
             path: "/",
-            name: "admin",
             component: importComponent('DashboardLayout'),
             children: [
                 //Dashboard
@@ -31,12 +30,12 @@ const router = new VueRouter({
                 },
                 {
                     path: "/UGD",
-                    name: "Guided",
+                    name: "UGD",
                     component: importComponent('TodoList/ListUGD'),
                 },
                 {
                     path: "/Tugas",
-                    name: "Guided",
+                    name: "Tugas",
                     component: importComponent('TodoList/ListTugas'),
                 },
             ]

@@ -184,7 +184,7 @@ export default {
       this.todos.splice(this.todos.indexOf(item), 1);
     },
     filterByPriority(selected) {
-      return todos.indexOf(selected);
+      return this.todos.indexOf(selected);
     },
   },
 };
