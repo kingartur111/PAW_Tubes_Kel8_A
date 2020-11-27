@@ -15,7 +15,7 @@ const router = new VueRouter({
     mode: "history",
     routes: [
         {
-            path: "/",
+            path: "/admin",
             component: importComponent('DashboardLayout'),
             children: [
                 //Dashboard
@@ -52,12 +52,30 @@ const router = new VueRouter({
                 },
             ]
         },
+        {
+            path:'/',
+            name: 'user',
+            meta: { title: 'user' },
+            component: importComponent('User/index'),
+        },
         // Login
         {
             path: '/login',
             name: 'login',
             meta: { title: 'Login' },
             component: importComponent('Login'),
+        },
+        {
+            path: '/profil',
+            name: 'profil',
+            meta: { title: 'Profil' },
+            component: importComponent('User/profil'),
+        },
+        {
+            path: '/katalog',
+            name: 'katalog',
+            meta: { title: 'Katalog' },
+            component: importComponent('User/katalog'),
         },
         {
             path: '*',
