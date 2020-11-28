@@ -1,17 +1,69 @@
 <!-- @format -->
 <template>
   <main>
-    <v-container fluid fill-height class="posisinya">
+      <div> 
+
+    <v-app-bar app absolute height="75px" style="background: rgba(61, 30, 26, 0.8);">
+      
+
+    <v-avatar
+      color="primary"
+      size="40"
+      tile
+    ></v-avatar>
+      <h3 style="color:white;">   Perpustakaan Tadika Mesra</h3>
+      <V-Spacer />
+        <v-btn-toggle
+        v-model="navbarBtn"
+        tile
+        color="white accent-3"
+        rounded
+        group
+
+      >
+      
+        <v-btn value="home" >
+          <span class="whiteText">
+            Home
+          </span>
+        </v-btn>
+
+
+        <v-btn value="katalog">
+          <span class="whiteText">
+            Katalog
+          </span>
+        </v-btn>
+    
+        <v-btn value="profil">
+          <span class="whiteText">
+            Profil
+          </span>
+        </v-btn>
+        
+
+      </v-btn-toggle>
+      <V-Spacer />
+
+          <v-btn rounded>Login/Register</v-btn>
+
+    </v-app-bar>
+
+  <v-card>
+      <v-img 
+        src="https://wallpapercave.com/wp/IlpLRYK.jpg"
+        gradient="to top right, rgba(0, 0, 0, 0.70), rgba(0, 0, 0, 0.70)">
+      </v-img>
+
+      <v-container fluid fill-height class="posisinya">
       <v-layout flex align-center justify-center>
         <v-flex xs12 sm6 elevation-6>
-          <v-toolbar class="grey darken-3">
-            <v-toolbar-title class="grey--text">
-              <h1>Met dteng y bossque, xixixi</h1>
-            </v-toolbar-title>
-          </v-toolbar>
-          <v-card>
-            <v-card-text class="pt-4">
-              <div>
+          <v-card color="white" outlined>
+            <v-row >
+              <v-col align-self="right">
+              <v-card-title v-if="toogleLogin">Login Page</v-card-title>
+                  <v-card-text v-if="toogleLogin" class="sizeCardView">
+                  <div>
                 <v-form v-model="valid" ref="form">
                   <v-text-field
                     label="E-mail"
@@ -28,23 +80,95 @@
                     counter
                     required
                   ></v-text-field>
+                   <v-card-subtitle>Belum Punya Akun? <button @click="toogleLogin=false" style="color:blue">Register</button></v-card-subtitle>
                   <v-layout justify-end>
+                   
                     <v-btn
-                      router
+                      color="brown"
                       class="mr-2"
                       @click="submit"
                       :class="{
-                        'grey darken-1 white--text': valid,
+                        'brown darken-1 white--text': valid,
                         disabled: !valid,
                       }"
-                      >Go
-                    </v-btn>
-                    <v-btn @click="clear" class="grey darken-3 white--text"
-                      >Clear
+                      >Login
                     </v-btn>
                   </v-layout>
                 </v-form>
               </div>
+                  </v-card-text>
+                
+              </v-col>
+
+              <v-col>
+                <v-card-title v-if="!toogleLogin">Register Page</v-card-title>
+                  <v-card-text v-if="!toogleLogin">
+                  <div>
+                <v-form v-model="valid" ref="form">
+                  <v-text-field
+                    label="Nama Lengkap"
+                    v-model="regisData.nama"
+                    :rules="emailRules"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    label="E-mail"
+                    v-model="regisData.email"
+                    :rules="emailRules"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    label="Nomor Telepon"
+                    v-model="regisData.noTelp"
+                    type="text"
+                    min="12"
+                    :rules="passwordRules"
+                    counter
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    label="Password"
+                    v-model="regisData.password"
+                    type="password"
+                    min="8"
+                    :rules="passwordRules"
+                    counter
+                    required
+                  ></v-text-field>
+
+                  <v-text-field
+                    label="Confirm Password"
+                    v-model="regisData.conPass"
+                    type="password"
+                    min="8"
+                    :rules="passwordRules"
+                    
+                    required
+                  ></v-text-field>
+                   <v-card-subtitle>Sudah Punya Akun? <button @click="toogleLogin=true" style="color:blue">Login</button></v-card-subtitle>
+                  <v-layout justify-end>
+                   
+                    <v-btn
+                      color="brown"
+                      class="mr-2"
+                      @click="submit"
+                      :class="{
+                        'brown darken-1 white--text': valid,
+                        disabled: !valid,
+                      }"
+                      >Register
+                    </v-btn>
+                  </v-layout>
+                </v-form>
+              </div>
+                  </v-card-text>
+
+
+              </v-col>
+            </v-row>
+
+            <v-card-text class="pt-4">
+              
             </v-card-text>
           </v-card>
           <v-snackbar v-model="snackbar" :color="color" timeout="2000" bottom>
@@ -53,11 +177,21 @@
         </v-flex>
       </v-layout>
     </v-container>
+</v-card>
+
+
+</div>
   </main>
 </template>
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Jolly%20Lodger");
+
+
+.whiteText{
+   color: whitesmoke;
+}
+
 
 .grey--text {
   font-family: "Jolly Lodger";
@@ -65,9 +199,14 @@
 
 .posisinya {
   position: absolute;
-  top: 20px;
+  top: 0px;
   left: 0px;
   right: 0px;
+}
+
+
+.sizeCardView{
+  height: auto;
 }
 </style>
 
@@ -79,12 +218,20 @@ export default {
       load: false,
       snackbar: false,
       error_message: "",
+      toogleLogin:true,
       color: "",
       valid: false,
       password: "",
       passwordRules: [(v) => !!v || "Password tidak boleh kosong :("],
       email: "",
       emailRules: [(v) => !!v || "E-mail tidak boleh kosong :("],
+      regisData: {
+        nama:'',
+        email:'',
+        noTelp:'',
+        pass:'',
+        conPass:'',
+      }
     };
   },
   methods: {
@@ -128,3 +275,5 @@ export default {
   },
 };
 </script>
+
+

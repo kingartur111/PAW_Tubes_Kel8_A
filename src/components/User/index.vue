@@ -11,9 +11,36 @@
     ></v-avatar>
       <h3 style="color:white;">   Perpustakaan Tadika Mesra</h3>
       <V-Spacer />
-        <v-btn rounded>Home</v-btn>
-        <v-btn rounded>Katalog</v-btn>
-        <v-btn rounded>Profil</v-btn>
+        <v-btn-toggle
+        v-model="navbarBtn"
+        tile
+        color="white accent-3"
+        rounded
+        group
+
+      >
+      
+        <v-btn value="home" >
+          <span class="whiteText">
+            Home
+          </span>
+        </v-btn>
+
+
+        <v-btn value="katalog">
+          <span class="whiteText">
+            Katalog
+          </span>
+        </v-btn>
+    
+        <v-btn value="profil">
+          <span class="whiteText">
+            Profil
+          </span>
+        </v-btn>
+        
+
+      </v-btn-toggle>
       <V-Spacer />
 
           <v-btn rounded>Login</v-btn>
@@ -69,9 +96,20 @@
 
 </template>
 
+<style>
+
+.whiteText{
+   color: whitesmoke;
+}
+
+
+</style>
+
+
 <script>
   export default {
     data: () => ({
+      navbarBtn: 'home',
       sticky: false,
     }),
   }

@@ -80,12 +80,15 @@
 </template>
 
 
+
+
 <script>
 export default {
   name: "List",
   data() {
     return {
       inputType: "Tambah",
+      navbarBtn: 'home',
       load: false,
       snackbar: false,
       error_message: "",

@@ -10,12 +10,36 @@
     ></v-avatar>
       <h3 style="color:white;">Perpustakaan Tadika Mesra</h3>
       <V-Spacer />
-        <v-btn rounded><router-link to="index">Home</router-link></v-btn>
-        <v-btn rounded>Katalog</v-btn>
-        <v-btn rounded>Profil</v-btn>
+         <v-btn-toggle
+        v-model="navbarBtn"
+        tile
+        color="white accent-3"
+        rounded
+        group
+
+      >
+        <v-btn value="home" >
+          <span class="whiteText">
+            Home
+          </span>
+        </v-btn>
+
+        <v-btn value="katalog">
+          <span class="whiteText">
+            Katalog
+          </span>
+        </v-btn>
+
+        <v-btn value="profil">
+          <span class="whiteText">
+            Profil
+          </span>
+        </v-btn>
+
+      </v-btn-toggle>
       <V-Spacer />
 
-          <v-btn rounded>Logout</v-btn>
+          <v-btn rounded color="error">Logout</v-btn>
     </v-app-bar>
 
   <v-card>
@@ -87,8 +111,88 @@
         v-for="item in items"
         :key="item"
       >
-        <v-card flat>
-          <v-card-text v-text="text"></v-card-text>
+        <v-card v-if="tab==0" flat>
+          <v-container class="grey lighten-5">
+            <v-row
+              v-for="data in profile"
+              :key="data"
+              
+            >
+              <v-col
+                v-for="k in 2"
+                :key="k"
+              >
+                  <span v-if="k==1">
+                  {{data}}
+                  </span>
+                  <span v-else>
+                    {{k}}
+                  </span>
+
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card>
+        <v-card v-if="tab==1" flat>
+           <v-container class="grey lighten-5">
+             <v-text-field
+              v-model="user.nama"
+              label="Nama"
+              filled
+              shaped
+          ></v-text-field>
+
+             <v-text-field
+              v-model="user.noTelp"
+              label="Nomor Telepon"
+              filled
+              shaped
+          ></v-text-field>
+
+          <div class="text-center">
+            <v-btn
+              rounded
+              color="brown"
+              dark
+            >
+              Ubah Profil
+            </v-btn>
+          </div>
+
+           </v-container>
+        </v-card>
+        <v-card v-if="tab==2" flat>
+          <v-container class="grey lighten-5">
+             <v-text-field
+              v-model="passwordOld"
+              label="Password Lama"
+              filled
+              shaped
+          ></v-text-field>
+
+          <v-text-field
+              v-model="passwordNew"
+              label="Password Baru"
+              filled
+              shaped
+          ></v-text-field>
+          <v-text-field
+              v-model="confirmPass"
+              label="Konfirmasi Password"
+              filled
+              shaped
+          ></v-text-field>
+
+          <div class="text-center">
+            <v-btn
+              rounded
+              color="brown"
+              dark
+            >
+              Ubah Password
+            </v-btn>
+          </div>
+          </v-container>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
@@ -98,15 +202,37 @@
 
 </template>
 
+<style>
+
+.whiteText{
+   color: whitesmoke;
+}
+
+
+</style>
+
 <script>
   export default {
     data: () => ({
       sticky: false,
-       tab: null,
+       tab: 0,
+       navbarBtn: 'profil',
+       passwordOld:'',
+       passwordNew:'',
+       confirmPass:'',
         items: [
           'User Detail', 'Edit Profile', 'Ubah Password'
         ],
+        profile: [
+          'ID Anggota', 'Nama', 'Nomor Telepon', 'Email', 
+        ],
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+        user: {
+          nama:'nama',
+          email:'A@gmail.com',
+          noTelp:'081271728282',
+          idMember:'',  
+        },
     }),
   }
 </script>
