@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Validator;
@@ -65,31 +66,48 @@ class AuthController extends Controller
     }
     public function update(Request $request, $id)
     {
-        if ($id) {
-            $name = $request->name;
-            $email = $request->email;
-            $password = $request->password;
-
-            $user = User::findOrFail($id);
-            if ($request->name != null) {
-                $user->name = $name;
-            }
-            if ($request->email != null) {
-                $user->email = $email;
-            }
-            if ($request->password != null) {
-                $user->password = password_hash($password, PASSWORD_BCRYPT);
-            }
-            if ($user->save()) {
-                return response([
-                    'message' => 'Update User Success',
-                    'data' => $user,
-                ], 200);
-            }
+        $user = User::findOrFail($id);
+        if (is_null($user)) {
             return response([
-                'message' => 'Update User Failed',
-                'data' => null,
-            ], 400);
+                'message' => 'User Not Found',
+                'data' => null
+            ], 404);
         }
+
+        if ($request->name != null) {
+            $user->name = $request->name;
+        }
+
+        if ($request->email != null) {
+            $user->email = $request->email;
+        }
+
+        if ($request->password != null) {
+            $user->password = password_hash($request->password, PASSWORD_BCRYPT);
+        }
+
+        if (isset($request->image)) {
+            $explodeed = explode(',', $request->image);
+            $decoded = base64_decode($explodeed[1]);
+
+            (str_contains($explodeed[0], 'jpeg')) ?  $extension = 'jpg' : $extension = 'png';
+            $filename = rand() . '.' . $extension;
+            $path = public_path() . '/' . $filename;
+            file_put_contents($path, $decoded);
+            $user->image = $filename;
+        }
+
+        $user->updated_at = Carbon::now();
+
+        if ($user->save()) {
+            return response([
+                'message' => 'Update User Success',
+                'data' => $user,
+            ], 200);
+        }
+        return response([
+            'message' => 'Update User Failed',
+            'data' => null,
+        ], 400);
     }
 }
