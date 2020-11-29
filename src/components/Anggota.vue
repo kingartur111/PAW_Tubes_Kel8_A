@@ -96,9 +96,9 @@ export default {
           text: "ID Anggota",
           align: "start",
           sortable: true,
-          value: "id_anggota",
+          value: "id",
         },
-        { text: "Nama", value: "nama" },
+        { text: "Nama", value: "name" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Actions", value: "actions" },
@@ -132,7 +132,7 @@ export default {
     },
     //read data anggota
     readData() {
-      var url = this.$api + "/anggota";
+      var url = this.$api + "/userall";
       this.$http
         .get(url, {
           headers: {
@@ -141,14 +141,11 @@ export default {
         })
         .then((response) => {
           this.anggotas = response.data.data;
-          console.log(response.data.data);
-          console.log(this.anggotas);
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
           this.color = "red";
           this.snackbar = true;
-          console.log(error.response);
         });
     },
     //simpan data produk
@@ -244,7 +241,38 @@ export default {
           this.load = false;
         });
     },
-    // blackList(item) {},
+    blackList(item) {
+      let status = {
+        status: "",
+      };
+      this.anggotas.status == "Blacklist"
+        ? (status.status = "Active")
+        : (status.status = "Blacklist");
+      var url = this.$api + "/user/" + item.id;
+      this.load = true;
+      this.$http
+        .put(url, status, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.error_message = response.data.message;
+          this.color = "green";
+          this.snackbar = true;
+          this.load = false;
+          this.close();
+          this.readData(); //mengambil data
+          this.resetForm();
+          console.log(response);
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+          this.load = false;
+        });
+    },
 
     editHandler(item) {
       this.inputType = "Ubah";
