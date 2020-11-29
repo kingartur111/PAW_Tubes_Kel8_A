@@ -19,6 +19,9 @@ Route::post('login', 'Api\AuthController@login');
 
 
 Route::group(['middleware' => 'auth:api'], function () {
+    // User
+    Route::get('userall', 'Api\AuthController@index');
+
     // Peminjaman
 
 
@@ -45,6 +48,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // Update Profil User
     Route::put('user/{id}', 'Api\AuthController@update');
+
 
     // Logout
     Route::post('logout', 'Api\AuthController@logout');

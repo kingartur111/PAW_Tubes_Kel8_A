@@ -11,6 +11,22 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        $user = User::all();
+        if (count($user)  > 0) {
+            return response([
+                'message' => 'Retrieve All Success',
+                'data' => $user
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Empty',
+            'data' => null
+        ], 404);
+    }
+
     public function register(Request $request)
     {
         $registrationData = $request->all();
