@@ -15,7 +15,7 @@
         ></v-text-field>
         <v-spacer></v-spacer>
       </v-card-title>
-      <v-data-table :headers="headers" :items="products" :search="search">
+      <v-data-table :headers="headers" :items="pegawais" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn small class="mr-2" @click="detailHandler(item)">
             Detail
@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       inputType: "Tambah",
-      navbarBtn: 'home',
+      navbarBtn: "home",
       load: false,
       snackbar: false,
       error_message: "",
@@ -101,22 +101,15 @@ export default {
           text: "ID Pegawai",
           align: "start",
           sortable: true,
-          value: "id",
+          value: "idpegawai",
         },
         { text: "Nama", value: "nama" },
-        { text: "Nomor Telp", value: "notelp" },
+        { text: "Nomor Telp", value: "no_telp" },
         { text: "Jabatan", value: "jabatan" },
         { text: "Actions", value: "actions" },
       ],
-      product: new FormData(),
-      products: [
-        {
-          id: "185266115849",
-          nama: "Calvin",
-          notelp: "021-1515-11",
-          jabatan: "Calvin OOOO",
-        },
-      ],
+      pegawai: new FormData(),
+      pegawais: [],
       form: {
         nama_produk: null,
         satuan: null,
@@ -135,9 +128,9 @@ export default {
         this.update();
       }
     },
-    //read data product
+    //read data pegawai
     readData() {
-      var url = this.$api + "/product";
+      var url = this.$api + "/pegawai";
       this.$http
         .get(url, {
           headers: {
@@ -145,9 +138,9 @@ export default {
           },
         })
         .then((response) => {
-          this.products = response.data.data;
+          this.pegawais = response.data.data;
           console.log(response.data.data);
-          console.log(this.products);
+          console.log(this.pegawais);
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
@@ -158,15 +151,15 @@ export default {
     },
     //simpan data produk
     save() {
-      this.product.append("nama_produk", this.form.nama_produk);
-      this.product.append("satuan", this.form.satuan);
-      this.product.append("harga_jual", this.form.harga_jual);
-      this.product.append("stok", this.form.stok);
+      this.pegawai.append("nama_produk", this.form.nama_produk);
+      this.pegawai.append("satuan", this.form.satuan);
+      this.pegawai.append("harga_jual", this.form.harga_jual);
+      this.pegawai.append("stok", this.form.stok);
 
-      var url = this.$api + "/product/";
+      var url = this.$api + "/pegawai/";
       this.load = true;
       this.$http
-        .post(url, this.product, {
+        .post(url, this.pegawai, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -195,7 +188,7 @@ export default {
         harga_jual: this.form.harga_jual,
         stok: this.form.stok,
       };
-      var url = this.$api + "/product/" + this.editId;
+      var url = this.$api + "/pegawai/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -223,7 +216,7 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/product/" + this.deleteId;
+      var url = this.$api + "/pegawai/" + this.deleteId;
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
