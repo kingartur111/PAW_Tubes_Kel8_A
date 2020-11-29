@@ -82,6 +82,10 @@ class AuthController extends Controller
             $user->email = $request->email;
         }
 
+        if ($request->status != null) {
+            $user->status = $request->status;
+        }
+
         if ($request->password != null) {
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
         }
