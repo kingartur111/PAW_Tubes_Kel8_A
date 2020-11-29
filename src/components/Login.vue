@@ -14,7 +14,6 @@
       <h3 style="color:white;">   Perpustakaan Tadika Mesra</h3>
       <V-Spacer />
         <v-btn-toggle
-        v-model="navbarBtn"
         tile
         color="white accent-3"
         rounded
@@ -60,11 +59,11 @@
         <v-flex xs12 sm6 elevation-6>
           <v-card color="white" outlined>
             <v-row >
-              <v-col align-self="right">
+              <v-col>
               <v-card-title v-if="toogleLogin">Login Page</v-card-title>
                   <v-card-text v-if="toogleLogin" class="sizeCardView">
                   <div>
-                <v-form v-model="valid" ref="form">
+                <v-form v-model="valid" ref="formlogin">
                   <v-text-field
                     label="E-mail"
                     v-model="email"
@@ -104,17 +103,18 @@
                 <v-card-title v-if="!toogleLogin">Register Page</v-card-title>
                   <v-card-text v-if="!toogleLogin">
                   <div>
-                <v-form v-model="valid" ref="form">
+                <v-form v-model="valid" ref="formReg">
                   <v-text-field
                     label="Nama Lengkap"
                     v-model="regisData.nama"
-                    :rules="emailRules"
+                    :rules="namaRules"
                     required
                   ></v-text-field>
                   <v-text-field
                     label="E-mail"
                     v-model="regisData.email"
                     :rules="emailRules"
+                    type="email"
                     required
                   ></v-text-field>
                   <v-text-field
@@ -122,13 +122,13 @@
                     v-model="regisData.noTelp"
                     type="text"
                     min="12"
-                    :rules="passwordRules"
+                    :rules="noTelpRules"
                     counter
                     required
                   ></v-text-field>
                   <v-text-field
                     label="Password"
-                    v-model="regisData.password"
+                    v-model="regisData.pass"
                     type="password"
                     min="8"
                     :rules="passwordRules"
@@ -151,7 +151,7 @@
                     <v-btn
                       color="brown"
                       class="mr-2"
-                      @click="submit"
+                      @click="submitReg"
                       :class="{
                         'brown darken-1 white--text': valid,
                         disabled: !valid,
@@ -222,21 +222,24 @@ export default {
       color: "",
       valid: false,
       password: "",
-      passwordRules: [(v) => !!v || "Password tidak boleh kosong :("],
       email: "",
-      emailRules: [(v) => !!v || "E-mail tidak boleh kosong :("],
+      namaRules: [(v) => !!v || "Nama tidak boleh kosong "],
+      noTelpRules: [(v) => !!v || "Nomor Telepon tidak boleh kosong "],
+      passwordRules: [(v) => !!v || "Password tidak boleh kosong "],
+      emailRules: [(v) => !!v || "E-mail tidak boleh kosong"],
       regisData: {
         nama:'',
         email:'',
         noTelp:'',
         pass:'',
+
         conPass:'',
       }
     };
   },
   methods: {
     submit() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.formlogin.validate()) {
         //cek apakah data yang akan dikirim sudah valid;
         this.load = true;
         this.$http
@@ -255,7 +258,7 @@ export default {
             this.clear();
             console.log(this.email);
             this.$router.push({
-              path: "/products",
+              path: "/index",
             });
             console.log("test");
           })
@@ -268,6 +271,44 @@ export default {
             console.log(error.response);
           });
       }
+    },
+    submitReg(){
+      if (this.$refs.formReg.validate()) {
+        if(this.regisData.pass == this.regisData.conPass){
+            this.load=true;
+            this.$http.post(this.$api +'/register', {
+            name: this.regisData.nama,
+            noTelp: this.regisData.noTelp,
+            email: this.regisData.email,
+            password: this.regisData.pass,
+          }).then((response) => {
+            this.error_message = response.data.message;
+            this.color = "green";
+            this.snackbar = true;
+            this.load = false;
+            this.clear();
+            console.log(this.email);
+            this.$router.push({
+              path: "/login",
+            });
+            console.log("test");
+          })
+          .catch((error) => {
+            this.error_message = error.response;
+            this.color = "red";
+            this.snackbar = true;
+            this.load = false;
+            console.log(error.response);
+          });
+        }else{
+          this.error_message = 'Password Tidak Sama'
+           this.color = "red";
+            this.snackbar = true;
+            this.load = false;
+        }
+          
+      }
+
     },
     clear() {
       this.$refs.form.reset(); //Clear form login
