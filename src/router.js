@@ -54,7 +54,7 @@ const router = new VueRouter({
         },
         {
             path:'/',
-            name: 'user',
+            name: 'index',
             meta: { title: 'user' },
             component: importComponent('User/index'),
         },
