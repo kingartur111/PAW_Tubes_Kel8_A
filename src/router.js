@@ -53,9 +53,9 @@ const router = new VueRouter({
             ]
         },
         {
-            path:'/',
+            path:'/index',
             name: 'index',
-            meta: { title: 'user' },
+            meta: { title: 'index' },
             component: importComponent('User/index'),
         },
         // Login

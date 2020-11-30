@@ -118,15 +118,6 @@
                     required
                   ></v-text-field>
                   <v-text-field
-                    label="Nomor Telepon"
-                    v-model="regisData.noTelp"
-                    type="text"
-                    min="12"
-                    :rules="noTelpRules"
-                    counter
-                    required
-                  ></v-text-field>
-                  <v-text-field
                     label="Password"
                     v-model="regisData.pass"
                     type="password"
@@ -224,13 +215,11 @@ export default {
       password: "",
       email: "",
       namaRules: [(v) => !!v || "Nama tidak boleh kosong "],
-      noTelpRules: [(v) => !!v || "Nomor Telepon tidak boleh kosong "],
       passwordRules: [(v) => !!v || "Password tidak boleh kosong "],
       emailRules: [(v) => !!v || "E-mail tidak boleh kosong"],
       regisData: {
         nama:'',
         email:'',
-        noTelp:'',
         pass:'',
 
         conPass:'',
@@ -256,9 +245,8 @@ export default {
             this.snackbar = true;
             this.load = false;
             this.clear();
-            console.log(this.email);
             this.$router.push({
-              path: "/index",
+              path: "/profil",
             });
             console.log("test");
           })
@@ -278,7 +266,6 @@ export default {
             this.load=true;
             this.$http.post(this.$api +'/register', {
             name: this.regisData.nama,
-            noTelp: this.regisData.noTelp,
             email: this.regisData.email,
             password: this.regisData.pass,
           }).then((response) => {
@@ -286,18 +273,17 @@ export default {
             this.color = "green";
             this.snackbar = true;
             this.load = false;
-            this.clear();
+            this.toogleLogin = true;
+            this.clearRegForm()
             console.log(this.email);
-            this.$router.push({
-              path: "/login",
-            });
             console.log("test");
           })
           .catch((error) => {
-            this.error_message = error.response;
+            this.error_message = error.message;
             this.color = "red";
             this.snackbar = true;
             this.load = false;
+
             console.log(error.response);
           });
         }else{
@@ -311,8 +297,15 @@ export default {
 
     },
     clear() {
-      this.$refs.form.reset(); //Clear form login
+      this.$refs.formlogin.reset(); //Clear form login
     },
+    clearRegForm(){
+
+        this.regisData.nama = ''
+        this.regisData.email =''
+        this.regisData.pass=''
+        this.regisData.conPass=''
+    }
   },
 };
 </script>
