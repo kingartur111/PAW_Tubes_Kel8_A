@@ -21,30 +21,29 @@
 
       >
       
-        <v-btn value="home" >
+         <v-btn value="home" @click="pindahPage(1)">
           <span class="whiteText">
             Home
           </span>
         </v-btn>
 
 
-        <v-btn value="katalog">
+        <v-btn value="katalog" @click="pindahPage(2)">
           <span class="whiteText">
             Katalog
           </span>
         </v-btn>
     
-        <v-btn value="profil">
+        <v-btn value="profil" @click="pindahPage(3)">
           <span class="whiteText">
             Profil
           </span>
         </v-btn>
-        
 
       </v-btn-toggle>
       <V-Spacer />
 
-          <v-btn rounded>Login/Register</v-btn>
+      <v-btn rounded @click="pindahPage(4)">Login/Register</v-btn>
 
     </v-app-bar>
 
@@ -227,6 +226,26 @@ export default {
     };
   },
   methods: {
+     pindahPage(nomor){
+        if(nomor==1){
+            this.$router.push({
+              name: 'index'
+            })
+        }else if(nomor==2)
+        {
+              this.$router.push({
+              name: 'katalog'
+            })
+        }else if(nomor==3){
+              this.$router.push({
+              name: 'profil'
+            })
+        }else{
+              this.$router.push({
+              name: 'login'
+            })
+        }
+     },
     submit() {
       if (this.$refs.formlogin.validate()) {
         //cek apakah data yang akan dikirim sudah valid;

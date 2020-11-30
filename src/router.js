@@ -78,8 +78,8 @@ const router = new VueRouter({
             component: importComponent('User/katalog'),
         },
         {
-            path: '*',
-            redirect: '/'
+            path: '',
+            redirect: '/index'
         },
     ]
 });
