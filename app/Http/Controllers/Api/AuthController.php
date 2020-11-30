@@ -27,6 +27,10 @@ class AuthController extends Controller
         ], 404);
     }
 
+
+
+
+
     public function register(Request $request)
     {
         $registrationData = $request->all();
@@ -82,7 +86,7 @@ class AuthController extends Controller
     }
     public function update(Request $request, $id)
     {
-        \Log::info($request->all());
+        Log::info($request->all());
         $user = User::findOrFail($id);
         if (is_null($user)) {
             return response([
@@ -154,4 +158,20 @@ class AuthController extends Controller
             'data' => null,
         ], 400);
     }
+
+    public function getUser($id){
+        $user = User::find($id);
+        if (!is_null($user)) {
+            return response([
+                'message' => 'Retrieve Success',
+                'user' => $user
+            ], 200);
+        }
+
+        return response([
+            'message' => 'No User Were Found',
+            'user' => null
+        ], 404);
+    }
+
 }

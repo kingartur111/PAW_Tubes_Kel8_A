@@ -23,7 +23,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('userall', 'Api\AuthController@index');
     Route::delete('user/{id}', 'Api\AuthController@destroy');
     Route::put('user/{id}', 'Api\AuthController@update');
-
+    Route::get('user/{id}', 'Api\AuthController@getUser');
     // Peminjaman
 
 
