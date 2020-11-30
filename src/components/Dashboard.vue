@@ -27,10 +27,12 @@
 export default {
   data() {
     return {
+      userAll: [],
+      totalUser: "",
       card: [
         {
           title: "Total User",
-          text: "19000",
+          text: "",
         },
         {
           title: "Total Buku",
@@ -41,8 +43,56 @@ export default {
           text: "19000",
         },
       ],
+
       // title: this.$router.title,
     };
+  },
+  methods: {
+    readData() {
+      this.user();
+      this.buku();
+    },
+    user() {
+      var url = this.$api + "/userall";
+      this.$http
+        .get(url, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.userAll = response.data.data;
+          this.totalUser = this.userAll.length;
+          this.card[0].text = this.totalUser;
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+        });
+    },
+    buku() {
+      var url = this.$api + "/buku";
+      this.$http
+        .get(url, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.userAll = response.data.data;
+          this.totalUser = this.userAll.length;
+          this.card[1].text = this.totalUser;
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+        });
+    },
+  },
+  mounted() {
+    this.readData();
   },
 };
 </script>

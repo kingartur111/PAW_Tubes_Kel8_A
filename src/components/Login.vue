@@ -274,12 +274,11 @@ export default {
             this.snackbar = true;
             this.load = false;
             this.toogleLogin = true;
-            this.clearRegForm()
             console.log(this.email);
             console.log("test");
           })
           .catch((error) => {
-            this.error_message = error.message;
+            this.error_message = error.response;
             this.color = "red";
             this.snackbar = true;
             this.load = false;
@@ -300,6 +299,7 @@ export default {
       this.$refs.formlogin.reset(); //Clear form login
     },
     clearRegForm(){
+
 
         this.regisData.nama = ''
         this.regisData.email =''

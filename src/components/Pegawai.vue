@@ -15,17 +15,15 @@
         ></v-text-field>
         <v-spacer></v-spacer>
       </v-card-title>
-      <v-data-table :headers="headers" :items="products" :search="search">
+      <v-data-table :headers="headers" :items="pegawais" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class="mr-2" @click="detailHandler(item)">
-            Detail
-          </v-btn>
           <v-btn small class="mr-2" @click="editHandler(item)"> edit </v-btn>
           <v-btn small @click="deleteHandler(item.id)"> delete </v-btn>
         </template>
       </v-data-table>
     </v-card>
 
+    <!-- Dialog Tambah & Edit -->
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
@@ -33,20 +31,13 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              v-model="form.nama_produk"
-              label="Nama Produk"
-              required
-            >
+            <v-text-field v-model="form.nama" label="Nama" required>
             </v-text-field>
 
-            <v-text-field v-model="form.satuan" label="Satuan" required>
+            <v-text-field v-model="form.notelp" label="No. Telp" required>
             </v-text-field>
 
-            <v-text-field v-model="form.harga_jual" label="Harga Jual" required>
-            </v-text-field>
-
-            <v-text-field v-model="form.stok" label="Stok" required>
+            <v-text-field v-model="form.jabatan" label="Jabatan" required>
             </v-text-field>
           </v-container>
         </v-card-text>
@@ -58,6 +49,7 @@
       </v-card>
     </v-dialog>
 
+    <!-- Dialog Delete -->
     <v-dialog v-model="dialogConfirm" persistent max-width="400px">
       <v-card>
         <v-card-title>
@@ -88,7 +80,7 @@ export default {
   data() {
     return {
       inputType: "Tambah",
-      navbarBtn: 'home',
+      navbarBtn: "home",
       load: false,
       snackbar: false,
       error_message: "",
@@ -101,27 +93,19 @@ export default {
           text: "ID Pegawai",
           align: "start",
           sortable: true,
-          value: "id",
+          value: "id_pegawai",
         },
         { text: "Nama", value: "nama" },
-        { text: "Nomor Telp", value: "notelp" },
+        { text: "Nomor Telp", value: "no_telp" },
         { text: "Jabatan", value: "jabatan" },
         { text: "Actions", value: "actions" },
       ],
-      product: new FormData(),
-      products: [
-        {
-          id: "185266115849",
-          nama: "Calvin",
-          notelp: "021-1515-11",
-          jabatan: "Calvin OOOO",
-        },
-      ],
+      pegawai: new FormData(),
+      pegawais: [],
       form: {
-        nama_produk: null,
-        satuan: null,
-        harga_jual: null,
-        stok: null,
+        nama: null,
+        notelp: null,
+        jabatan: null,
       },
       deleteId: "",
       editId: "",
@@ -135,9 +119,9 @@ export default {
         this.update();
       }
     },
-    //read data product
+    //read data pegawai
     readData() {
-      var url = this.$api + "/product";
+      var url = this.$api + "/pegawai";
       this.$http
         .get(url, {
           headers: {
@@ -145,9 +129,9 @@ export default {
           },
         })
         .then((response) => {
-          this.products = response.data.data;
+          this.pegawais = response.data.data;
           console.log(response.data.data);
-          console.log(this.products);
+          console.log(this.pegawais);
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
@@ -158,15 +142,17 @@ export default {
     },
     //simpan data produk
     save() {
-      this.product.append("nama_produk", this.form.nama_produk);
-      this.product.append("satuan", this.form.satuan);
-      this.product.append("harga_jual", this.form.harga_jual);
-      this.product.append("stok", this.form.stok);
+      let id = "PG" + Math.floor(Math.random() * 10000);
 
-      var url = this.$api + "/product/";
+      this.pegawai.append("id_pegawai", id);
+      this.pegawai.append("nama", this.form.nama);
+      this.pegawai.append("no_telp", this.form.notelp);
+      this.pegawai.append("jabatan", this.form.jabatan);
+
+      var url = this.$api + "/pegawai";
       this.load = true;
       this.$http
-        .post(url, this.product, {
+        .post(url, this.pegawai, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -190,12 +176,11 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama_produk: this.form.nama_produk,
-        satuan: this.form.satuan,
-        harga_jual: this.form.harga_jual,
-        stok: this.form.stok,
+        nama: this.form.nama,
+        no_telp: this.form.notelp,
+        jabatan: this.form.jabatan,
       };
-      var url = this.$api + "/product/" + this.editId;
+      var url = this.$api + "/pegawai/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -223,7 +208,7 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/product/" + this.deleteId;
+      var url = this.$api + "/pegawai/" + this.deleteId;
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
@@ -235,6 +220,7 @@ export default {
           this.error_message = response.data.message;
           this.color = "green";
           this.snackbar = true;
+          this.dialogConfirm = false;
           this.load = false;
           this.close();
           this.readData(); //mengambil data
@@ -251,10 +237,9 @@ export default {
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
-      this.form.nama_produk = item.nama_produk;
-      this.form.satuan = item.satuan;
-      this.form.stok = item.stok;
-      this.form.harga_jual = item.harga_jual;
+      this.form.nama = item.nama;
+      this.form.notelp = item.no_telp;
+      this.form.jabatan = item.jabatan;
       this.dialog = true;
     },
     deleteHandler(id) {

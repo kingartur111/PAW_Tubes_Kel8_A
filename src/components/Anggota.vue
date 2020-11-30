@@ -15,11 +15,9 @@
         ></v-text-field>
         <v-spacer></v-spacer>
       </v-card-title>
-      <v-data-table :headers="headers" :items="products" :search="search">
+      <v-data-table :headers="headers" :items="anggotas" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class="mr-2" @click="detailHandler(item)">
-            Blacklist
-          </v-btn>
+          <v-btn small class="mr-2" @click="blackList(item)"> Blacklist </v-btn>
           <v-btn small class="mr-2" @click="editHandler(item)"> edit </v-btn>
           <v-btn small @click="deleteHandler(item.id)"> delete </v-btn>
         </template>
@@ -100,13 +98,13 @@ export default {
           sortable: true,
           value: "id",
         },
-        { text: "Nama", value: "nama" },
+        { text: "Nama", value: "name" },
         { text: "Email", value: "email" },
         { text: "Status", value: "status" },
         { text: "Actions", value: "actions" },
       ],
-      product: new FormData(),
-      products: [
+      anggota: new FormData(),
+      anggotas: [
         {
           id: "1231123123",
           nama: "Calvin",
@@ -115,8 +113,8 @@ export default {
         },
       ],
       form: {
-        nama_produk: null,
-        satuan: null,
+        nama: null,
+        email: null,
         harga_jual: null,
         stok: null,
       },
@@ -132,9 +130,9 @@ export default {
         this.update();
       }
     },
-    //read data product
+    //read data anggota
     readData() {
-      var url = this.$api + "/product";
+      var url = this.$api + "/userall";
       this.$http
         .get(url, {
           headers: {
@@ -142,28 +140,25 @@ export default {
           },
         })
         .then((response) => {
-          this.products = response.data.data;
-          console.log(response.data.data);
-          console.log(this.products);
+          this.anggotas = response.data.data;
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
           this.color = "red";
           this.snackbar = true;
-          console.log(error.response);
         });
     },
     //simpan data produk
     save() {
-      this.product.append("nama_produk", this.form.nama_produk);
-      this.product.append("satuan", this.form.satuan);
-      this.product.append("harga_jual", this.form.harga_jual);
-      this.product.append("stok", this.form.stok);
+      this.anggota.append("nama_produk", this.form.nama_produk);
+      this.anggota.append("satuan", this.form.satuan);
+      this.anggota.append("harga_jual", this.form.harga_jual);
+      this.anggota.append("stok", this.form.stok);
 
-      var url = this.$api + "/product/";
+      var url = this.$api + "/anggota/";
       this.load = true;
       this.$http
-        .post(url, this.product, {
+        .post(url, this.anggota, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -187,12 +182,12 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama_produk: this.form.nama_produk,
+        nama: this.form.nama,
         satuan: this.form.satuan,
         harga_jual: this.form.harga_jual,
         stok: this.form.stok,
       };
-      var url = this.$api + "/product/" + this.editId;
+      var url = this.$api + "/anggota/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -220,7 +215,8 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/product/" + this.deleteId;
+      var url = this.$api + "/user/" + this.deleteId;
+      console.log(this.deleteId);
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
@@ -233,6 +229,7 @@ export default {
           this.color = "green";
           this.snackbar = true;
           this.load = false;
+          this.dialogConfirm = false;
           this.close();
           this.readData(); //mengambil data
           this.resetForm();
@@ -243,8 +240,43 @@ export default {
           this.color = "red";
           this.snackbar = true;
           this.load = false;
+          console.log(error.response.data);
         });
     },
+    blackList(item) {
+      console.log(item);
+      let status = {
+        status: "",
+      };
+      item.status == "Blacklist"
+        ? (status.status = "Active")
+        : (status.status = "Blacklist");
+      var url = this.$api + "/user/" + item.id;
+      this.load = true;
+      this.$http
+        .put(url, status, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.error_message = response.data.message;
+          this.color = "green";
+          this.snackbar = true;
+          this.load = false;
+          this.close();
+          this.readData(); //mengambil data
+          this.resetForm();
+          console.log(response);
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+          this.load = false;
+        });
+    },
+
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
