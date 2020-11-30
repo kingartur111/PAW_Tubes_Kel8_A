@@ -8,7 +8,7 @@ use Carbon\Carbon;
 class Pegawai extends Model
 {
     protected $fillable = [
-        'idpegawai', 'nama', 'no_telp', 'jabatan'
+        'id_pegawai', 'nama', 'no_telp', 'jabatan'
     ];
 
 

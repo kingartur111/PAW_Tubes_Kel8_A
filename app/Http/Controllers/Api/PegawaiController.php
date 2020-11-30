@@ -45,9 +45,10 @@ class PegawaiController extends Controller
 
     public function store(Request $request)
     {
+        \Log::info($request->all());
         $storeData = $request->all();
         $validate = Validator::make($storeData, [
-            'idpegawai' => 'required|max:60|unique:pegawais',
+            'id_pegawai' => 'required|max:60|unique:pegawais',
             'nama' => 'required|regex:/^[\pL\s\-]+$/u',
             'no_telp' => 'required|numeric',
             'jabatan' => 'required|alpha'
@@ -89,6 +90,7 @@ class PegawaiController extends Controller
 
     public function update(Request $request, $id)
     {
+        \Log::info($request->all());
         $pegawai = Pegawai::findOrFail($id);
         if (is_null($pegawai)) {
             return response([
@@ -98,8 +100,8 @@ class PegawaiController extends Controller
         }
         $updateData = $request->all();
 
-        if (isset($updateData['idpegawai'])) {
-            $pegawai->idpegawai = $updateData['idpegawai'];
+        if (isset($updateData['id_pegawai'])) {
+            $pegawai->idpegawai = $updateData['id_pegawai'];
         }
 
         if (isset($updateData['nama'])) {

@@ -82,6 +82,7 @@ class AuthController extends Controller
     }
     public function update(Request $request, $id)
     {
+        \Log::info($request->all());
         $user = User::findOrFail($id);
         if (is_null($user)) {
             return response([
@@ -127,6 +128,29 @@ class AuthController extends Controller
         }
         return response([
             'message' => 'Update User Failed',
+            'data' => null,
+        ], 400);
+    }
+    public function destroy($id)
+    {
+        $user = User::find($id);
+
+        if (is_null($user)) {
+            return response([
+                'message' => 'User Not Found',
+                'data' => null
+            ], 404);
+        }
+
+        if ($user->delete()) {
+            return response([
+                'message' => 'Delete User Success',
+                'data' => $user,
+            ], 200);
+        }
+
+        return response([
+            'message' => 'Delete User Failed',
             'data' => null,
         ], 400);
     }

@@ -21,6 +21,8 @@ Route::post('login', 'Api\AuthController@login');
 Route::group(['middleware' => 'auth:api'], function () {
     // User
     Route::get('userall', 'Api\AuthController@index');
+    Route::delete('user/{id}', 'Api\AuthController@destroy');
+    Route::put('user/{id}', 'Api\AuthController@update');
 
     // Peminjaman
 
@@ -44,11 +46,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('anggota/{id}', 'Api\AnggotaController@show');
     Route::post('anggota', 'Api\AnggotaController@store');
     Route::put('anggota/{id}', 'Api\AnggotaController@update');
-    Route::delete('anggota/{id}', 'Api\AnggotaController@destroy');
-
-    // Update Profil User
-    Route::put('user/{id}', 'Api\AuthController@update');
-
 
     // Logout
     Route::post('logout', 'Api\AuthController@logout');
