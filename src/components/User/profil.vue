@@ -40,7 +40,7 @@
       </v-btn-toggle>
       <V-Spacer />
 
-          <v-btn rounded color="error">Logout</v-btn>
+          <v-btn rounded color="error" @click="accLogout()">Logout</v-btn>
     </v-app-bar>
 
   <v-card>
@@ -68,12 +68,12 @@
           <v-avatar
             class="profile"
             color="grey"
-            size="250"
+            size="200"
             tile
             rounded
             style="margin-start:46%;margin-top:20px;"
           >
-            <v-img src="https://cdn.vuetifyjs.com/images/profiles/marcus.jpg"></v-img>
+            <v-img v-bind:src="'http://127.0.0.1:8000/' +user.image"></v-img>
           </v-avatar>
         </v-col>
         <v-col class="py-0">
@@ -83,7 +83,7 @@
           >
             <v-list-item-content style="margin-start:46%;">
               <v-list-item-title class="title">
-                Marcus Obrien
+               
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -115,8 +115,8 @@
         <v-card v-if="tab==0" flat>
           <v-container class="grey lighten-5">
             <v-row
-              v-for="data in profile"
-              :key="data"
+              v-for="i in 4"
+              :key="i"
               
             >
               <v-col
@@ -124,20 +124,32 @@
                 :key="k"
               >
                   <span v-if="k==1">
-                  {{data}}
+                  {{profile[i]}}
                   </span>
                   <span v-else>
-                    {{user[k]}}
+                    {{show[i]}}
                   </span>
 
               </v-col>
             </v-row>
+            <v-card-subtitle>Upload Profile Picture</v-card-subtitle>
+            <v-row>
+              <v-col>
+               <input id="file" type="file" @change="getImg($event)">
+              </v-col>
+              <v-col>
+                <v-btn color="brown" @click="updateProfil">Update Profile</v-btn>
+              </v-col>
+            </v-row>
+
+            
           </v-container>
         </v-card>
         <v-card v-if="tab==1" flat>
            <v-container class="grey lighten-5">
              <v-text-field
-              v-model="user.nama"
+              v-model="user.name"
+              :value="user.name"
               label="Nama"
               filled
               shaped
@@ -148,6 +160,7 @@
               rounded
               color="brown"
               dark
+              @click="update"
             >
               Ubah Profil
             </v-btn>
@@ -160,6 +173,7 @@
              <v-text-field
               v-model="passwordOld"
               label="Password Lama"
+              type="password"
               filled
               shaped
           ></v-text-field>
@@ -167,12 +181,14 @@
           <v-text-field
               v-model="passwordNew"
               label="Password Baru"
+              type="password"
               filled
               shaped
           ></v-text-field>
           <v-text-field
               v-model="confirmPass"
               label="Konfirmasi Password"
+              type="password"
               filled
               shaped
           ></v-text-field>
@@ -182,6 +198,7 @@
               rounded
               color="brown"
               dark
+              @click="update"
             >
               Ubah Password
             </v-btn>
@@ -219,14 +236,17 @@
        snackbar: false,
        error_message:'',
        color:'',
+       name:'',
+       image:null, 
         items: [
-          'User Detail', 'Edit Profile', 'Ubah Password'
+         'User Detail', 'Edit Profile', 'Ubah Password'
         ],
         profile: [
-          'ID Anggota', 'Nama', 'Nomor Telepon', 'Email', 
+         '', 'ID Anggota', 'Nama', 'Email', 
         ],
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        user: []
+        user: [],
+        show:[]
     }),
 
     methods:{
@@ -250,31 +270,136 @@
             })
         }
       },
+      update(){
+          if(this.tab==1){
+             this.$http.put(this.$api + '/user/' + this.user.id,{
+               'name' : this.user.name,
+             },{
+               headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+             }}).then(response =>{
+                this.error_message = response.message
+                this.color="green"
+                this.snackbar= true
+                this.user = response.data.data;
+                window.location.reload()
+             }).catch(error=>{
+            this.error_message = error.message
+            this.color="red"
+            this.snackbar= true
+          })
+          }else if(this.tab==2){
+            if(this.confirmPass == this.passwordNew){
+               this.$http.put(this.$api + '/user/' + this.user.id,{
+               'passwordOld' : this.passwordOld,
+               'password' : this.passwordNew
+             },{
+               headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+             }}).then(response =>{
+                this.error_message = response.data.message
+                this.color="green"
+                this.snackbar= true
+                this.user = response.data.data;
+               window.location.reload()
+             }).catch(error=>{
+            this.error_message = error.message
+            this.color="red"
+            this.snackbar= true
+          })
+
+            }else{
+            this.error_message = 'password Tidak sama'
+            this.color="red"
+            this.snackbar= true
+            }
+
+
+          }
+      },
+      getImg(event){
+        // const image = event.target.files[0];
+        // this.imgURL = image;
+        // this.data.append('image', this.imgURL);
+        // FB.api('/' + id + '/picture?redirect=false&height=120&width=120',
+        // 'GET', {}, response => {
+        // console.log(this.getDataUri(response.data.url));
+
+        var reader = new FileReader();
+        reader.readAsDataURL(event.target.files[0]);
+        reader.onload =  (e) =>{
+          console.log(reader.result);
+          this.image = e.target.result
+        };
+
+      },
+      updateProfil(){
+         var url = this.$api + '/user/'+localStorage.getItem("id") ;
+                this.$http.put(url,{
+                  'image' : this.image,
+                }
+                ,{
+                headers: {
+                     "Authorization" : `Bearer ${localStorage.getItem("token")}`,
+                }
+            }).then(response=>{
+                this.error_message = response.data.message;
+                this.img = response.data.data.image;
+                this.color="green"
+                this.snackbar=true;
+                this.user = response.data;
+                window.location.reload();
+               
+            }).catch(error=> {
+                this.error_message = error.response.data.message;
+                this.color = "red"
+                this.snackbar= true
+            })
+      },
       cekUser(){
-        this.$http.get(this.$api + '/user/' + localStorage.getItem("id"),
+        
+        this.$http.get(this.$api + '/user',
         {headers: {
                     "Authorization" : `Bearer ${localStorage.getItem("token")}`
                 }})
           .then(response=>{
-            this.error_message = response.message
-            this.color="green"
-            this.snackbar= true
             this.user = response.data;
+            this.show = ['',this.user.id,this.user.name,this.user.email]
           }).catch(error=>{
             this.error_message = error.message
             this.color="red"
             this.snackbar= true
-      //       this.$router.push({
-      //       name: 'login'
-      // })
+            this.$router.push({
+            name: 'login'
+      })
           })
-      }
 
+
+      },
+
+       accLogout(){
+        // this.$http.post(this.$api + '/logout',{headers: {
+        //             "Authorization" : `Bearer ${localStorage.getItem("token")}`
+        //         }}).then(response=>{
+        //         this.error_message = response.data.message;
+        //         this.img = response.data.data.image;
+        //         this.color="green"
+        //         this.snackbar=true;
+
+               
+        //     }).catch(error=> {
+        //         this.error_message = error.response.data.message;
+        //         this.color = "red"
+        //         this.snackbar= true
+        //     })
+                localStorage.removeItem("token")
+                localStorage.removeItem("id")
+    },
+   
+      
     },
     mounted(){
       this.cekUser()
-
-      
     }
   }
 </script>
