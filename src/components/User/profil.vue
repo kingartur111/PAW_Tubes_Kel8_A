@@ -127,7 +127,7 @@
                   {{data}}
                   </span>
                   <span v-else>
-                    {{user.nama}}
+                    {{user[k]}}
                   </span>
 
               </v-col>
@@ -226,11 +226,7 @@
           'ID Anggota', 'Nama', 'Nomor Telepon', 'Email', 
         ],
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        user: {
-          nama:'nama',
-          email:'A@gmail.com',
-          idMember:'',  
-        },
+        user: []
     }),
 
     methods:{
@@ -263,8 +259,7 @@
             this.error_message = response.message
             this.color="green"
             this.snackbar= true
-           
-            this.user = response.data.user;
+            this.user = response.data;
           }).catch(error=>{
             this.error_message = error.message
             this.color="red"
