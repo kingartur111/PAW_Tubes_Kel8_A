@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 
 class BukuController extends Controller
@@ -52,7 +53,7 @@ class BukuController extends Controller
             'pengarang' => 'required|alpha',
             'kategori' => 'required|alpha',
             'tahun' => 'required|numeric',
-            'bahasa' => 'required|alpha',
+            'bahasa' => 'required',
             'image' => 'alpha'
         ]);
 
@@ -81,7 +82,11 @@ class BukuController extends Controller
 
     public function destroy($id)
     {
+        // Cari buku dari database berdasarkan id
         $buku = Buku::find($id);
+        // Delete File image in public
+        File::delete('/' . $buku->image);
+
 
         if (is_null($buku)) {
             return response([
@@ -90,6 +95,7 @@ class BukuController extends Controller
             ], 404);
         }
 
+        // Delete Buku
         if ($buku->delete()) {
             return response([
                 'message' => 'Delete Buku Success',
