@@ -246,7 +246,7 @@ export default {
             this.load = false;
             this.clear();
             this.$router.push({
-              path: "/profil",
+              path: "/index",
             });
             console.log("test");
           })
@@ -299,8 +299,6 @@ export default {
       this.$refs.formlogin.reset(); //Clear form login
     },
     clearRegForm(){
-
-
         this.regisData.nama = ''
         this.regisData.email =''
         this.regisData.pass=''

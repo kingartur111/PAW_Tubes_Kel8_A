@@ -127,7 +127,7 @@
                   {{data}}
                   </span>
                   <span v-else>
-                    {{k}}
+                    {{user.nama}}
                   </span>
 
               </v-col>
@@ -139,13 +139,6 @@
              <v-text-field
               v-model="user.nama"
               label="Nama"
-              filled
-              shaped
-          ></v-text-field>
-
-             <v-text-field
-              v-model="user.noTelp"
-              label="Nomor Telepon"
               filled
               shaped
           ></v-text-field>
@@ -197,7 +190,9 @@
         </v-card>
       </v-tab-item>
     </v-tabs-items>
-
+  <v-snackbar v-model="snackbar" :color="color" timeout="2000" bottom>
+            {{ error_message }}
+          </v-snackbar>
 </div>
 
 
@@ -221,6 +216,9 @@
        passwordOld:'',
        passwordNew:'',
        confirmPass:'',
+       snackbar: false,
+       error_message:'',
+       color:'',
         items: [
           'User Detail', 'Edit Profile', 'Ubah Password'
         ],
@@ -231,7 +229,6 @@
         user: {
           nama:'nama',
           email:'A@gmail.com',
-          noTelp:'081271728282',
           idMember:'',  
         },
     }),
@@ -256,7 +253,33 @@
               name: 'login'
             })
         }
+      },
+      cekUser(){
+        this.$http.get(this.$api + '/user/' + localStorage.getItem("id"),
+        {headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+                }})
+          .then(response=>{
+            this.error_message = response.message
+            this.color="green"
+            this.snackbar= true
+           
+            this.user = response.data.user;
+          }).catch(error=>{
+            this.error_message = error.message
+            this.color="red"
+            this.snackbar= true
+      //       this.$router.push({
+      //       name: 'login'
+      // })
+          })
       }
+
+    },
+    mounted(){
+      this.cekUser()
+
+      
     }
   }
 </script>
