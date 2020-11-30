@@ -113,8 +113,8 @@ export default {
         },
       ],
       form: {
-        nama_produk: null,
-        satuan: null,
+        nama: null,
+        email: null,
         harga_jual: null,
         stok: null,
       },
@@ -182,7 +182,7 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama_produk: this.form.nama_produk,
+        nama: this.form.nama,
         satuan: this.form.satuan,
         harga_jual: this.form.harga_jual,
         stok: this.form.stok,
@@ -215,7 +215,8 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/anggota/" + this.deleteId;
+      var url = this.$api + "/user/" + this.deleteId;
+      console.log(this.deleteId);
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
@@ -239,13 +240,15 @@ export default {
           this.color = "red";
           this.snackbar = true;
           this.load = false;
+          console.log(error.response.data);
         });
     },
     blackList(item) {
+      console.log(item);
       let status = {
         status: "",
       };
-      this.anggotas.status == "Blacklist"
+      item.status == "Blacklist"
         ? (status.status = "Active")
         : (status.status = "Blacklist");
       var url = this.$api + "/user/" + item.id;

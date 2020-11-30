@@ -31,90 +31,98 @@
       <v-card>
         <v-card-title>
           <span class="headline">Detail Buku</span>
+          <v-spacer></v-spacer>
+          <v-icon class="mx-6 my-3" @click="close">mdi-close</v-icon>
         </v-card-title>
         <div class="d-flex">
           <v-img
             lazy-src="https://picsum.photos/id/11/10/6"
             max-height="250"
             max-width="150"
-            class="ma-6"
+            class="mx-6 mb-2"
             src="https://cdn.discordapp.com/attachments/699241908043513877/782531390180818964/canva-starry-night-illustration-book-cover-MACAg6OlqBM.png"
           ></v-img>
-          <v-card-text class="my-2">
+          <v-card-text class="my-2 pt-0">
             <div>
               <tr>
                 <td>ISBN</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.ISBN }}</td>
               </tr>
               <tr>
                 <td>Judul</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.Judul }}</td>
               </tr>
               <tr>
                 <td>Pengarang</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.pengarang }}</td>
               </tr>
               <tr>
                 <td>Penerbit</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.penerbit }}</td>
               </tr>
               <tr>
                 <td>Kategori</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.kategori }}</td>
               </tr>
               <tr>
                 <td>Bahasa</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.bahasa }}</td>
               </tr>
               <tr>
                 <td>Tahun</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.tahun }}</td>
               </tr>
               <tr>
                 <td>Created</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.created_at }}</td>
               </tr>
               <tr>
                 <td>Updated</td>
-                <td class="px-3">:</td>
+                <td class="px-3 pb-1">:</td>
                 <td>{{ form.updated_at }}</td>
               </tr>
             </div>
           </v-card-text>
         </div>
-        <v-card-action>
-          <v-btn class="ma-3" @click="close">Close</v-btn>
-        </v-card-action>
+        <div></div>
       </v-card>
     </v-dialog>
 
     <!-- Dialog Tambah & Edit -->
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
-        <v-card-title>
+        <v-card-title class="d-flex justify-space-between">
           <span class="headline">{{ formTitle }} Buku</span>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text v-model="form.Judul"> </v-text>
-
-            <v-text-field v-model="form.satuan" label="Satuan" required>
+            <v-text-field v-model="form.ISBN" label="ISBN" required>
             </v-text-field>
-
-            <v-text-field v-model="form.harga_jual" label="Harga Jual" required>
+            <v-text-field v-model="form.Judul" label="Judul" required>
             </v-text-field>
-
-            <v-text-field v-model="form.stok" label="Stok" required>
+            <v-text-field v-model="form.pengarang" label="Pengarang" required>
+            </v-text-field>
+            <v-text-field v-model="form.penerbit" label="Penerbit" required>
+            </v-text-field>
+            <v-text-field v-model="form.kategori" label="Kategori" required>
+            </v-text-field>
+            <v-text-field v-model="form.bahasa" label="Bahasa" required>
+            </v-text-field>
+            <v-text-field v-model="form.tahun" label="Tahun" required>
             </v-text-field>
           </v-container>
+          <v-card-action class="d-flex justify-end">
+            <v-btn @click="sefForm">Save</v-btn>
+          </v-card-action>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -346,10 +354,13 @@ export default {
     },
     resetForm() {
       this.form = {
-        nama_produk: null,
-        satuan: null,
-        harga_jual: null,
-        stok: null,
+        ISBN: null,
+        Judul: null,
+        pengarang: null,
+        penerbit: null,
+        tahun: null,
+        bahasa: null,
+        kategori: null,
       };
     },
   },

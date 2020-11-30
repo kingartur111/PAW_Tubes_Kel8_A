@@ -16,48 +16,21 @@
         rounded
         group
       >
-<<<<<<< HEAD
-        <v-btn value="home">
+        <v-btn value="home" @click="pindahPage(1)">
           <span class="whiteText"> Home </span>
         </v-btn>
 
-        <v-btn value="katalog">
+        <v-btn value="katalog" @click="pindahPage(2)">
           <span class="whiteText"> Katalog </span>
         </v-btn>
 
-        <v-btn value="profil">
-          <span class="whiteText"> Profil </span>
-=======
-      
-        <v-btn value="home" @click="pindahPage(1)">
-          <span class="whiteText">
-            Home
-          </span>
-        </v-btn>
-
-
-        <v-btn value="katalog" @click="pindahPage(2)">
-          <span class="whiteText">
-            Katalog
-          </span>
-        </v-btn>
-    
         <v-btn value="profil" @click="pindahPage(3)">
-          <span class="whiteText">
-            Profil
-          </span>
->>>>>>> 31bea2daa161ec42f7d8b3290323cfcff0e6072e
+          <span class="whiteText"> Profil </span>
         </v-btn>
       </v-btn-toggle>
       <V-Spacer />
 
-<<<<<<< HEAD
-      <v-btn rounded>Login</v-btn>
-      <v-btn rounded>Register</v-btn>
-=======
-<v-btn rounded @click="pindahPage(4)">Login/Register</v-btn>
-
->>>>>>> 31bea2daa161ec42f7d8b3290323cfcff0e6072e
+      <v-btn rounded @click="pindahPage(4)">Login/Register</v-btn>
     </v-app-bar>
 
     <v-card>
@@ -129,44 +102,34 @@
 
 
 <script>
-<<<<<<< HEAD
 export default {
-  data: () => ({
-    navbarBtn: "home",
-    sticky: false,
-  }),
-};
-=======
-  export default {
-    name: "index",
-    data() {
-      return {
-      navbarBtn: 'home',
+  name: "index",
+  data() {
+    return {
+      navbarBtn: "home",
       sticky: false,
+    };
+  },
+  methods: {
+    pindahPage(nomor) {
+      if (nomor == 1) {
+        this.$router.push({
+          name: "index",
+        });
+      } else if (nomor == 2) {
+        this.$router.push({
+          name: "katalog",
+        });
+      } else if (nomor == 3) {
+        this.$router.push({
+          name: "profil",
+        });
+      } else {
+        this.$router.push({
+          name: "login",
+        });
       }
     },
-    methods:{
-      pindahPage(nomor){
-        if(nomor==1){
-            this.$router.push({
-              name: 'index'
-            })
-        }else if(nomor==2)
-        {
-              this.$router.push({
-              name: 'katalog'
-            })
-        }else if(nomor==3){
-              this.$router.push({
-              name: 'profil'
-            })
-        }else{
-              this.$router.push({
-              name: 'login'
-            })
-        }
-      }
-    }
-  }
->>>>>>> 31bea2daa161ec42f7d8b3290323cfcff0e6072e
+  },
+};
 </script>
