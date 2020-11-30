@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -86,7 +87,7 @@ class AuthController extends Controller
     }
     public function update(Request $request, $id)
     {
-        Log::info($request->all());
+        \Log::info($request->all());
         $user = User::findOrFail($id);
         if (is_null($user)) {
             return response([
@@ -108,7 +109,14 @@ class AuthController extends Controller
         }
 
         if ($request->password != null) {
-            $user->password = password_hash($request->password, PASSWORD_BCRYPT);
+            if(Hash::check($request->passwordOld, $user->password))
+                $user->password = password_hash($request->password, PASSWORD_BCRYPT);
+            else{
+                return response([
+                    'message' => 'Password Lama Salah',
+                    'data' => null,
+                ], 400);
+            }
         }
 
         if (isset($request->image)) {
