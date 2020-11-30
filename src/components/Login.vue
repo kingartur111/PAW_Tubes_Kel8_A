@@ -238,7 +238,7 @@ export default {
             this.load = false;
             this.clear();
             this.$router.push({
-              path: "/profil",
+              path: "/index",
             });
             console.log("test");
           })
