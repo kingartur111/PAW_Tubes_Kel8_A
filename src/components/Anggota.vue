@@ -31,28 +31,20 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-text-field
-              v-model="form.nama_produk"
-              label="Nama Produk"
-              required
-            >
+            <v-text-field v-model="form.nama" label="Nama" required>
             </v-text-field>
-
-            <v-text-field v-model="form.satuan" label="Satuan" required>
-            </v-text-field>
-
-            <v-text-field v-model="form.harga_jual" label="Harga Jual" required>
-            </v-text-field>
-
-            <v-text-field v-model="form.stok" label="Stok" required>
-            </v-text-field>
+            <v-select
+              :items="items"
+              v-model="form.status"
+              label="Status"
+            ></v-select>
           </v-container>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
+            <v-btn color="blue darken-1" text @click="setForm"> Save </v-btn>
+          </v-card-actions>
         </v-card-text>
-        <v-card-action>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
-          <v-btn color="blue darken-1" text @click="setForm"> Save </v-btn>
-        </v-card-action>
       </v-card>
     </v-dialog>
 
@@ -91,6 +83,7 @@ export default {
       search: null,
       dialog: false,
       dialogConfirm: false,
+      items: ["Active", "Blacklist"],
       headers: [
         {
           text: "ID Anggota",
@@ -114,9 +107,7 @@ export default {
       ],
       form: {
         nama: null,
-        email: null,
-        harga_jual: null,
-        stok: null,
+        status: null,
       },
       deleteId: "",
       editId: "",
@@ -182,12 +173,10 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama: this.form.nama,
-        satuan: this.form.satuan,
-        harga_jual: this.form.harga_jual,
-        stok: this.form.stok,
+        name: this.form.nama,
+        status: this.form.status,
       };
-      var url = this.$api + "/anggota/" + this.editId;
+      var url = this.$api + "/user/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -280,10 +269,9 @@ export default {
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
-      this.form.nama_produk = item.nama_produk;
-      this.form.satuan = item.satuan;
-      this.form.stok = item.stok;
-      this.form.harga_jual = item.harga_jual;
+      this.form.nama = item.name;
+      this.form.status = item.status;
+      console.log(item.name);
       this.dialog = true;
     },
     deleteHandler(id) {

@@ -21,7 +21,7 @@
             Detail
           </v-btn>
           <v-btn small class="mr-2" @click="editHandler(item)"> edit </v-btn>
-          <v-btn small @click="deleteHandler(item.id)"> delete </v-btn>
+          <v-btn small @click="deleteHandler(item)"> delete </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -36,11 +36,10 @@
         </v-card-title>
         <div class="d-flex">
           <v-img
-            lazy-src="https://picsum.photos/id/11/10/6"
             max-height="250"
             max-width="150"
             class="mx-6 mb-2"
-            src="https://cdn.discordapp.com/attachments/699241908043513877/782531390180818964/canva-starry-night-illustration-book-cover-MACAg6OlqBM.png"
+            :src="'http://127.0.0.1:8000/' + books.image"
           ></v-img>
           <v-card-text class="my-2 pt-0">
             <div>
@@ -117,12 +116,17 @@
             </v-text-field>
             <v-text-field v-model="form.bahasa" label="Bahasa" required>
             </v-text-field>
-            <v-text-field v-model="form.tahun" label="Tahun" required>
-            </v-text-field>
+            <v-row>
+              <v-col
+                ><v-text-field v-model="form.tahun" label="Tahun" required>
+                </v-text-field
+              ></v-col>
+              <v-col><input type="file" @change="imageChanged" /></v-col>
+            </v-row>
           </v-container>
-          <v-card-action class="d-flex justify-end">
-            <v-btn @click="sefForm">Save</v-btn>
-          </v-card-action>
+          <v-card-actions class="d-flex justify-end">
+            <v-btn @click="setForm">Save</v-btn>
+          </v-card-actions>
         </v-card-text>
       </v-card>
     </v-dialog>
@@ -191,6 +195,7 @@ export default {
       },
       deleteId: "",
       editId: "",
+      image: "",
     };
   },
   methods: {
@@ -212,24 +217,35 @@ export default {
         })
         .then((response) => {
           this.books = response.data.data;
-          console.log(response.data.data);
-          console.log(this.books[0].Judul);
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
           this.color = "red";
           this.snackbar = true;
-          console.log(error.response);
         });
     },
     //simpan data produk
-    save() {
-      this.book.append("nama_produk", this.form.nama_produk);
-      this.book.append("satuan", this.form.satuan);
-      this.book.append("harga_jual", this.form.harga_jual);
-      this.book.append("stok", this.form.stok);
+    imageChanged(e) {
+      var fileReader = new FileReader();
+      fileReader.readAsDataURL(e.target.files[0]);
 
-      var url = this.$api + "/book/";
+      fileReader.onload = (e) => {
+        this.image = e.target.result;
+      };
+    },
+
+    save() {
+      this.book.append("ISBN", this.form.ISBN);
+      this.book.append("Judul", this.form.Judul);
+      this.book.append("pengarang", this.form.pengarang);
+      this.book.append("penerbit", this.form.penerbit);
+      this.book.append("kategori", this.form.kategori);
+      this.book.append("tahun", this.form.tahun);
+      this.book.append("bahasa", this.form.bahasa);
+      this.book.append("image", this.image);
+      this.book.append("penerbit", this.form.penerbit);
+
+      var url = this.$api + "/buku/";
       this.load = true;
       this.$http
         .post(url, this.book, {
@@ -256,12 +272,16 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama_produk: this.form.nama_produk,
-        satuan: this.form.satuan,
-        harga_jual: this.form.harga_jual,
-        stok: this.form.stok,
+        ISBN: this.form.ISBN,
+        Judul: this.form.Judul,
+        pengarang: this.form.pengarang,
+        penerbit: this.form.penerbit,
+        kategori: this.form.kategori,
+        tahun: this.form.tahun,
+        bahasa: this.form.bahasa,
+        image: this.image,
       };
-      var url = this.$api + "/book/" + this.editId;
+      var url = this.$api + "/buku/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -289,7 +309,7 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/book/" + this.deleteId;
+      var url = this.$api + "/buku/" + this.deleteId;
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
@@ -300,6 +320,7 @@ export default {
         .then((response) => {
           this.error_message = response.data.message;
           this.color = "green";
+          this.dialogConfirm = false;
           this.snackbar = true;
           this.load = false;
           this.close();
@@ -314,7 +335,28 @@ export default {
           this.load = false;
         });
     },
+    getBukuByID(id) {
+      var url = this.$api + "/buku/" + id;
+      this.$http
+        .get(url, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.books = response.data.data;
+          console.log(response.data);
+          console.log(this.books.image);
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+          console.log(error.response);
+        });
+    },
     detailHandler(item) {
+      this.getBukuByID(item.id);
       this.dialogDetail = true;
       this.form.ISBN = item.ISBN;
       this.form.Judul = item.Judul;
@@ -331,17 +373,24 @@ export default {
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
-      this.form.nama_produk = item.nama_produk;
-      this.form.satuan = item.satuan;
-      this.form.stok = item.stok;
-      this.form.harga_jual = item.harga_jual;
+      this.form.ISBN = item.ISBN;
+      this.form.Judul = item.Judul;
+      this.form.pengarang = item.pengarang;
+      this.form.penerbit = item.penerbit;
+      this.form.kategori = item.kategori;
+      this.form.tahun = item.tahun;
+      this.form.image = item.image;
+      this.form.bahasa = item.bahasa;
+      this.form.created_at = item.created_at;
+      this.form.updated_at = item.updated_at;
       this.dialog = true;
     },
-    deleteHandler(id) {
-      this.deleteId = id;
+    deleteHandler(item) {
+      this.deleteId = item.id;
       this.dialogConfirm = true;
     },
     close() {
+      this.resetForm();
       this.dialog = false;
       this.dialogDetail = false;
       this.inputType = "Tambah";
