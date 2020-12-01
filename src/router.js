@@ -25,7 +25,7 @@ const router = new VueRouter({
                     meta: { title: 'Dashboard', requiredAuth: true },
                     component: importComponent('Dashboard'),
                 },
-                // To do list
+                // Sidear Admin
                 {
                     path: "/peminjaman",
                     name: "Peminjaman",
@@ -53,7 +53,7 @@ const router = new VueRouter({
             ]
         },
         {
-            path:'/index',
+            path: '/index',
             name: 'index',
             meta: { title: 'index' },
             component: importComponent('User/index'),
@@ -84,22 +84,23 @@ const router = new VueRouter({
     ]
 });
 
-// router.beforeEach((to, from, next) => {
-
-//     if (to.matched.some(record => record.meta.requiredAuth)) {
-//         if (localStorage.getItem('token')) {
-//             //user is authenticated
-//             next();
-//         }
-//         else {
-//             //user is not authenticated
-//             router.replace('/login')
-//         }
-//     } else {
-//         next() // make sure to always call next()!
-//         console.log('MASUK SINI')
-//         console.log(to.matched.some(record => record.meta.requiredAuth))
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    document.title = to.meta.title;
+    next()
+    //     if (to.matched.some(record => record.meta.requiredAuth)) {
+    //         if (localStorage.getItem('token')) {
+    //             //user is authenticated
+    //             next();
+    //         }
+    //         else {
+    //             //user is not authenticated
+    //             router.replace('/login')
+    //         }
+    //     } else {
+    //         next() // make sure to always call next()!
+    //         console.log('MASUK SINI')
+    //         console.log(to.matched.some(record => record.meta.requiredAuth))
+    //     }
+})
 
 export default router;

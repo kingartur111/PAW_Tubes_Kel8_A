@@ -1,7 +1,7 @@
 <template>
   <v-main class="list">
     <div class="d-flex justify-space-between mb-6">
-      <v-btn color="brown" dark @click="dialog = true">
+      <v-btn color="brown" dark @click="dialogRequest">
         Request Peminjaman
       </v-btn>
       <v-btn color="brown" dark @click="dialog = true">
@@ -9,6 +9,7 @@
       >
     </div>
 
+    <!-- Data Table -->
     <v-card>
       <v-card-title>
         <v-text-field
@@ -20,7 +21,7 @@
         ></v-text-field>
         <v-spacer></v-spacer>
       </v-card-title>
-      <v-data-table :headers="headers" :items="products" :search="search">
+      <v-data-table :headers="headers" :items="peminjamans" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn small class="mr-2" @click="editHandler(item)"> edit </v-btn>
           <v-btn small @click="deleteHandler(item.id)"> delete </v-btn>
@@ -28,38 +29,90 @@
       </v-data-table>
     </v-card>
 
+    <!-- Dialog Tambah -->
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">{{ formTitle }} Produk</span>
+          <span class="headline">{{ formTitle }} Peminjaman</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-text-field
-              v-model="form.nama_produk"
-              label="Nama Produk"
+              type="number"
+              v-model="form.ISBN"
+              label="ISBN"
               required
             >
             </v-text-field>
 
-            <v-text-field v-model="form.satuan" label="Satuan" required>
+            <v-text-field v-model="form.peminjam" label="Peminjam" required>
             </v-text-field>
 
-            <v-text-field v-model="form.harga_jual" label="Harga Jual" required>
-            </v-text-field>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="dates"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-combobox
+                  v-model="dates"
+                  chips
+                  small-chips
+                  label="Tanggal Peminjaman"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-combobox>
+              </template>
+              <v-date-picker v-model="dates" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">
+                  Cancel
+                </v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(dates)">
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
 
-            <v-text-field v-model="form.stok" label="Stok" required>
+            <v-text-field v-model="form.status" label="Status" required>
             </v-text-field>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
+              <v-btn color="blue darken-1" text @click="setForm"> Save </v-btn>
+            </v-card-actions>
           </v-container>
         </v-card-text>
-        <v-card-action>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
-          <v-btn color="blue darken-1" text @click="setForm"> Save </v-btn>
-        </v-card-action>
       </v-card>
     </v-dialog>
 
+    <!-- Dialog Edit  -->
+    <v-dialog v-model="dialogEdit" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">{{ formTitle }} Peminjaman</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-text-field v-model="form.status" label="Status" required>
+            </v-text-field>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="cancel"> Cancel </v-btn>
+              <v-btn color="blue darken-1" text @click="setForm"> Save </v-btn>
+            </v-card-actions>
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <!-- Dialog Delete -->
     <v-dialog v-model="dialogConfirm" persistent max-width="400px">
       <v-card>
         <v-card-title>
@@ -87,6 +140,8 @@ export default {
   name: "List",
   data() {
     return {
+      menu: false,
+      dates: "",
       inputType: "Tambah",
       load: false,
       snackbar: false,
@@ -95,6 +150,7 @@ export default {
       search: null,
       dialog: false,
       dialogConfirm: false,
+      dialogEdit: false,
       headers: [
         {
           text: "ID Peminjaman",
@@ -102,13 +158,14 @@ export default {
           sortable: true,
           value: "id",
         },
+        { text: "ISBN", value: "ISBN" },
         { text: "Peminjam", value: "peminjam" },
-        { text: "Tanggal Peminjaman", value: "tanggal" },
+        { text: "Tanggal Peminjaman", value: "tgl_pinjam" },
         { text: "Status", value: "status" },
         { text: "Actions", value: "actions" },
       ],
-      product: new FormData(),
-      products: [
+      peminjaman: new FormData(),
+      peminjamans: [
         {
           id: "1",
           peminjam: "Adasdasd",
@@ -117,13 +174,14 @@ export default {
         },
       ],
       form: {
-        nama_produk: null,
-        satuan: null,
-        harga_jual: null,
-        stok: null,
+        ISBN: null,
+        peminjam: null,
+        tgl_pinjam: null,
+        status: null,
       },
       deleteId: "",
       editId: "",
+      item: [],
     };
   },
   methods: {
@@ -134,9 +192,13 @@ export default {
         this.update();
       }
     },
-    //read data product
+    //read data peminjaman
     readData() {
-      var url = this.$api + "/product";
+      this.getPeminjaman();
+    },
+
+    getPeminjaman() {
+      var url = this.$api + "/peminjaman";
       this.$http
         .get(url, {
           headers: {
@@ -144,9 +206,9 @@ export default {
           },
         })
         .then((response) => {
-          this.products = response.data.data;
+          this.peminjamans = response.data.data;
           console.log(response.data.data);
-          console.log(this.products);
+          console.log(this.peminjamans);
         })
         .catch((error) => {
           this.error_message = error.response.data.message;
@@ -157,15 +219,17 @@ export default {
     },
     //simpan data produk
     save() {
-      this.product.append("nama_produk", this.form.nama_produk);
-      this.product.append("satuan", this.form.satuan);
-      this.product.append("harga_jual", this.form.harga_jual);
-      this.product.append("stok", this.form.stok);
+      let id = "PG" + Math.floor(Math.random() * 10000);
+      this.peminjaman.append("id_peminjaman", id);
+      this.peminjaman.append("ISBN", this.form.ISBN);
+      this.peminjaman.append("peminjam", this.form.peminjam);
+      this.peminjaman.append("tgl_pinjam", this.dates);
+      this.peminjaman.append("status", this.form.status);
 
-      var url = this.$api + "/product/";
+      var url = this.$api + "/peminjaman/";
       this.load = true;
       this.$http
-        .post(url, this.product, {
+        .post(url, this.peminjaman, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -189,12 +253,9 @@ export default {
     //ubah data produk
     update() {
       let newData = {
-        nama_produk: this.form.nama_produk,
-        satuan: this.form.satuan,
-        harga_jual: this.form.harga_jual,
-        stok: this.form.stok,
+        status: this.form.status,
       };
-      var url = this.$api + "/product/" + this.editId;
+      var url = this.$api + "/peminjaman/" + this.editId;
       this.load = true;
       this.$http
         .put(url, newData, {
@@ -206,6 +267,7 @@ export default {
           this.error_message = response.data.message;
           this.color = "green";
           this.snackbar = true;
+          this.dialogEdit = false;
           this.load = false;
           this.close();
           this.readData(); //mengambil data
@@ -222,7 +284,7 @@ export default {
     //hapus data produk
     deleteData() {
       //mengahapus data
-      var url = this.$api + "/product/" + this.deleteId;
+      var url = this.$api + "/peminjaman/" + this.deleteId;
       //data dihapus berdasarkan id
       this.$http
         .delete(url, {
@@ -233,6 +295,7 @@ export default {
         .then((response) => {
           this.error_message = response.data.message;
           this.color = "green";
+          this.dialogConfirm = false;
           this.snackbar = true;
           this.load = false;
           this.close();
@@ -254,7 +317,7 @@ export default {
       this.form.satuan = item.satuan;
       this.form.stok = item.stok;
       this.form.harga_jual = item.harga_jual;
-      this.dialog = true;
+      this.dialogEdit = true;
     },
     deleteHandler(id) {
       this.deleteId = id;
@@ -268,6 +331,7 @@ export default {
       this.resetForm();
       this.readData();
       this.dialog = false;
+      this.dialogEdit = false;
       this.inputType = "Tambah";
     },
     resetForm() {

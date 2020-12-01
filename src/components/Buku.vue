@@ -34,11 +34,11 @@
           <v-spacer></v-spacer>
           <v-icon class="mx-6 my-3" @click="close">mdi-close</v-icon>
         </v-card-title>
-        <div class="d-flex">
+        <div class="d-flex pb-3">
           <v-img
             max-height="250"
             max-width="150"
-            class="mx-6 mb-2"
+            class="mx-6"
             :src="'http://127.0.0.1:8000/' + books.image"
           ></v-img>
           <v-card-text class="my-2 pt-0">
@@ -91,7 +91,6 @@
             </div>
           </v-card-text>
         </div>
-        <div></div>
       </v-card>
     </v-dialog>
 
@@ -357,7 +356,6 @@ export default {
     },
     detailHandler(item) {
       this.getBukuByID(item.id);
-      this.dialogDetail = true;
       this.form.ISBN = item.ISBN;
       this.form.Judul = item.Judul;
       this.form.pengarang = item.pengarang;
@@ -368,6 +366,7 @@ export default {
       this.form.bahasa = item.bahasa;
       this.form.created_at = item.created_at;
       this.form.updated_at = item.updated_at;
+      this.dialogDetail = true;
     },
 
     editHandler(item) {
