@@ -78,6 +78,12 @@ const router = new VueRouter({
             component: importComponent('User/katalog'),
         },
         {
+            path: '/geoloc',
+            name: 'geo',
+            meta: { title: 'geo' },
+            component: importComponent('User/geoloc'),
+        },
+        {
             path: '',
             redirect: '/index'
         },

@@ -27,6 +27,10 @@
         <v-btn value="profil" @click="pindahPage(3)">
           <span class="whiteText"> Profil </span>
         </v-btn>
+
+        <v-btn value="profil" @click="pindahPage(5)">
+          <span class="whiteText"> Find Us </span>
+        </v-btn>
       </v-btn-toggle>
       <V-Spacer />
 
@@ -167,9 +171,9 @@ export default {
           this.snackbar = true;
         });
     },
-    post(url, data) {
+    pinjamBuku(id) {
       this.$http
-        .post(url, data, {
+        .get(this.$api + "/buku/" + id, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -178,8 +182,30 @@ export default {
           this.error_message = response.data.message;
           this.color = "green";
           this.snackbar = true;
-          this.load = false;
-          this.readData();
+        });
+
+      var currentDateWithFormat = new Date()
+        .toJSON()
+        .slice(0, 10)
+        .replace(/-/g, "-");
+
+      this.$http
+        .post(
+          this.$api + "/requestBuku",
+          {
+            Judul: this.pinjam.Judul,
+            ISBN: this.pinjam.ISBN,
+            peminjam: localStorage.getItem("id"),
+            tgl_pinjam: currentDateWithFormat,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        )
+        .then((response) => {
+          this.pinjam = response.data.data;
         })
         .catch((error) => {
           this.error_message = error.response.data.message;

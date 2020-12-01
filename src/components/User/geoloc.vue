@@ -23,6 +23,12 @@
           <v-btn value="profil">
             <span class="whiteText"> Profil </span>
           </v-btn>
+
+          <v-btn value="profil" @click="pindahPage(5)">
+          <span class="whiteText">
+            Find Us
+          </span>
+        </v-btn>
         </v-btn-toggle>
         <V-Spacer />
 
@@ -40,118 +46,8 @@
           <v-layout flex align-center justify-center>
             <v-flex xs12 sm6 elevation-6>
               <v-card color="white" outlined>
-                <v-row>
-                  <v-col>
-                    <v-card-title v-if="toogleLogin">Login Page</v-card-title>
-                    <v-card-text v-if="toogleLogin" class="sizeCardView">
-                      <div>
-                        <v-form v-model="valid" ref="formlogin">
-                          <v-text-field
-                            label="E-mail"
-                            v-model="email"
-                            :rules="emailRules"
-                            required
-                          ></v-text-field>
-                          <v-text-field
-                            label="Password"
-                            v-model="password"
-                            type="password"
-                            min="8"
-                            :rules="passwordRules"
-                            counter
-                            required
-                          ></v-text-field>
-                          <v-card-subtitle
-                            >Belum Punya Akun?
-                            <button
-                              @click="toogleLogin = false"
-                              style="color: blue"
-                            >
-                              Register
-                            </button></v-card-subtitle
-                          >
-                          <v-layout justify-end>
-                            <v-btn
-                              color="brown"
-                              class="mr-2"
-                              @click="submit"
-                              :class="{
-                                'brown darken-1 white--text': valid,
-                                disabled: !valid,
-                              }"
-                              >Login
-                            </v-btn>
-                          </v-layout>
-                        </v-form>
-                      </div>
-                    </v-card-text>
-                  </v-col>
-
-                  <v-col>
-                    <v-card-title v-if="!toogleLogin"
-                      >Register Page</v-card-title
-                    >
-                    <v-card-text v-if="!toogleLogin">
-                      <div>
-                        <v-form v-model="valid" ref="formReg">
-                          <v-text-field
-                            label="Nama Lengkap"
-                            v-model="regisData.nama"
-                            :rules="namaRules"
-                            required
-                          ></v-text-field>
-                          <v-text-field
-                            label="E-mail"
-                            v-model="regisData.email"
-                            :rules="emailRules"
-                            type="email"
-                            required
-                          ></v-text-field>
-                          <v-text-field
-                            label="Password"
-                            v-model="regisData.pass"
-                            type="password"
-                            min="8"
-                            :rules="passwordRules"
-                            counter
-                            required
-                          ></v-text-field>
-
-                          <v-text-field
-                            label="Confirm Password"
-                            v-model="regisData.conPass"
-                            type="password"
-                            min="8"
-                            :rules="passwordRules"
-                            required
-                          ></v-text-field>
-                          <v-card-subtitle
-                            >Sudah Punya Akun?
-                            <button
-                              @click="toogleLogin = true"
-                              style="color: blue"
-                            >
-                              Login
-                            </button></v-card-subtitle
-                          >
-                          <v-layout justify-end>
-                            <v-btn
-                              color="brown"
-                              class="mr-2"
-                              @click="submitReg"
-                              :class="{
-                                'brown darken-1 white--text': valid,
-                                disabled: !valid,
-                              }"
-                              >Register
-                            </v-btn>
-                          </v-layout>
-                        </v-form>
-                      </div>
-                    </v-card-text>
-                  </v-col>
-                </v-row>
-
+                  <v-card-title>Find Us</v-card-title>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d988.2720997795809!2d110.41464273254333!3d-7.780451600446361!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59f1d2361f71%3A0x4a2ce83adbcfd5aa!2sPerpustakaan%20Universitas%20Atma%20Jaya%20Yogyakarta!5e0!3m2!1sid!2sid!4v1606842050184!5m2!1sid!2sid" width="780" height="520" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
                 <v-card-text class="pt-4"> </v-card-text>
               </v-card>
               <v-snackbar
