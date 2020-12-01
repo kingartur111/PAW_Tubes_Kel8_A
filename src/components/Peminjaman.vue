@@ -1,7 +1,7 @@
 <template>
   <v-main class="list">
     <div class="d-flex justify-space-between mb-6">
-      <v-btn color="brown" dark @click="dialogRequest = true">
+      <v-btn color="brown" dark @click="requestHandler">
         Request Peminjaman
       </v-btn>
       <v-btn color="brown" dark @click="dialog = true">
@@ -244,7 +244,6 @@ export default {
     //read data peminjaman
     readData() {
       this.getPeminjaman();
-      this.getRequest();
     },
 
     getRequest() {
@@ -411,6 +410,11 @@ export default {
     deleteHandler(id) {
       this.deleteId = id;
       this.dialogConfirm = true;
+    },
+
+    requestHandler() {
+      this.dialogRequest = true;
+      this.getRequest();
     },
 
     close() {
