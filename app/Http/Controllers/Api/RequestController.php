@@ -53,7 +53,7 @@ class RequestController extends Controller
             'Judul' => 'required',
             'ISBN' => 'required',
             'peminjam' => 'required',
-            'tgl_pinjam' => 'required|date',
+            // 'tgl_pinjam' => 'required|date',
         ]);
 
         if ($validate->fails())
@@ -69,6 +69,27 @@ class RequestController extends Controller
 
         $req = Peminjaman::create($storeData);
         $this->destroy($request->id);
+        return response([
+            'message' => 'Add Request Success',
+            'data' => $req,
+        ], 200);
+    }
+
+    public function requestBuku(Request $request)
+    {
+        \Log::info($request->all());
+        $storeData = $request->all();
+        $validate = Validator::make($storeData, [
+            'Judul' => 'required',
+            'ISBN' => 'required',
+            'peminjam' => 'required',
+            // 'tgl_pinjam' => 'required|date',
+        ]);
+
+        if ($validate->fails())
+            return response(['message' => $validate->errors()], 400);
+
+        $req = ReqPeminjaman::create($request->all());
         return response([
             'message' => 'Add Request Success',
             'data' => $req,

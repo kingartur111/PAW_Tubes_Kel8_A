@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('request/{id}', 'Api\RequestController@show');
     Route::post('request', 'Api\RequestController@store');
     Route::delete('request/{id}', 'Api\RequestController@destroy');
+    Route::post('requestBuku', 'Api\RequestController@requestBuku');
 
     // Peminjaman
     Route::get('peminjaman', 'Api\PeminjamanController@index');
@@ -39,7 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('peminjaman/{id}', 'Api\PeminjamanController@destroy');
 
     // Buku
-    Route::get('buku', 'Api\BukuController@index');
+
     Route::get('buku/{id}', 'Api\BukuController@show');
     Route::post('buku', 'Api\BukuController@store');
     Route::put('buku/{id}', 'Api\BukuController@update');
@@ -68,6 +69,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('email/verify/{id}', 'VerificationController@verify');// Make sure to keep this as your route name
-
-Route::get('email/resend', 'VerificationController@resend');
+Route::get('buku', 'Api\BukuController@index');

@@ -3,10 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Carbon\Carbon;
 
 class ReqPeminjaman extends Model
 {
+    use Notifiable;
     protected $fillable = [
         'ISBN', 'Judul', 'peminjam', 'tgl_pinjam'
     ];
