@@ -9,16 +9,74 @@ use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use DB;
+use stdClass;
 
 class AuthController extends Controller
 {
     public function index()
     {
+
+        $jan = DB::table('users')
+            ->whereBetween('created_at', [date('2020-01-01'), date('2020-01-31')])
+            ->count();
+        $feb = DB::table('users')
+            ->whereBetween('created_at', [date('2020-02-01'), date('2020-02-31')])
+            ->count();
+        $mar = DB::table('users')
+            ->whereBetween('created_at', [date('2020-03-01'), date('2020-03-31')])
+            ->count();
+        $apr = DB::table('users')
+            ->whereBetween('created_at', [date('2020-04-01'), date('2020-04-31')])
+            ->count();
+        $mei = DB::table('users')
+            ->whereBetween('created_at', [date('2020-05-01'), date('2020-05-31')])
+            ->count();
+        $jun = DB::table('users')
+            ->whereBetween('created_at', [date('2020-06-01'), date('2020-06-31')])
+            ->count();
+        $jul = DB::table('users')
+            ->whereBetween('created_at', [date('2020-07-01'), date('2020-07-31')])
+            ->count();
+        $aug = DB::table('users')
+            ->whereBetween('created_at', [date('2020-08-01'), date('2020-08-31')])
+            ->count();
+        $sep = DB::table('users')
+            ->whereBetween('created_at', [date('2020-09-01'), date('2020-09-31')])
+            ->count();
+        $oct = DB::table('users')
+            ->whereBetween('created_at', [date('2020-10-01'), date('2020-10-31')])
+            ->count();
+        $nov = DB::table('users')
+            ->whereBetween('created_at', [date('2020-11-01'), date('2020-11-31')])
+            ->count();
+        $des = DB::table('users')
+            ->whereBetween('created_at', [date('2020-12-01'), date('2020-12-31')])
+            ->count();
+
+        $object = new stdClass();
+        $object->jan = $jan;
+        $object->feb = $feb;
+        $object->mar = $mar;
+        $object->apr = $apr;
+        $object->mei = $mei;
+        $object->jun = $jun;
+        $object->jul = $jul;
+        $object->aug = $aug;
+        $object->sep = $sep;
+        $object->oct = $oct;
+        $object->nov = $nov;
+        $object->des = $des;
+
+        // $count = {
+        //     'jan' => $jan,
+        //      $feb, $mar, $apr, $mei, $jun, $jul, $aug, $sep, $oct, $nov, $des};
         $user = User::all();
         if (count($user)  > 0) {
             return response([
                 'message' => 'Retrieve All Success',
-                'data' => $user
+                'data' => $user,
+                'month' => $object
             ], 200);
         }
 
@@ -27,11 +85,6 @@ class AuthController extends Controller
             'data' => null
         ], 404);
     }
-
-
-
-
-
     public function register(Request $request)
     {
         $registrationData = $request->all();
@@ -109,9 +162,9 @@ class AuthController extends Controller
         }
 
         if ($request->password != null) {
-            if(Hash::check($request->passwordOld, $user->password))
+            if (Hash::check($request->passwordOld, $user->password))
                 $user->password = password_hash($request->password, PASSWORD_BCRYPT);
-            else{
+            else {
                 return response([
                     'message' => 'Password Lama Salah',
                     'data' => null,
