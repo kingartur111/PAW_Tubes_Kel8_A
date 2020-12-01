@@ -32,15 +32,15 @@ export default {
       card: [
         {
           title: "Total User",
-          text: "",
+          text: "0",
         },
         {
           title: "Total Buku",
-          text: "19000",
+          text: "0",
         },
         {
           title: "Total Peminjaman",
-          text: "19000",
+          text: "0",
         },
       ],
 
@@ -51,44 +51,39 @@ export default {
     readData() {
       this.user();
       this.buku();
+      this.peminjaman();
+    },
+    get(url, data) {
+      this.$http
+        .get(url, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          this.userAll = response.data.data;
+          this.totalUser = this.userAll.length;
+          if (data == "user") this.card[0].text = this.totalUser;
+          else if (data == "buku") this.card[1].text = this.totalUser;
+          else this.card[2].text = this.totalUser;
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+        });
     },
     user() {
       var url = this.$api + "/userall";
-      this.$http
-        .get(url, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          this.userAll = response.data.data;
-          this.totalUser = this.userAll.length;
-          this.card[0].text = this.totalUser;
-        })
-        .catch((error) => {
-          this.error_message = error.response.data.message;
-          this.color = "red";
-          this.snackbar = true;
-        });
+      this.get(url, "user");
     },
     buku() {
       var url = this.$api + "/buku";
-      this.$http
-        .get(url, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          this.userAll = response.data.data;
-          this.totalUser = this.userAll.length;
-          this.card[1].text = this.totalUser;
-        })
-        .catch((error) => {
-          this.error_message = error.response.data.message;
-          this.color = "red";
-          this.snackbar = true;
-        });
+      this.get(url, "buku");
+    },
+    peminjaman() {
+      var url = this.$api + "/peminjaman";
+      this.get(url, "peminjaman");
     },
   },
   mounted() {

@@ -1,7 +1,7 @@
 <template>
   <v-main class="list">
     <div class="d-flex justify-space-between mb-6">
-      <v-btn color="brown" dark @click="dialogRequest">
+      <v-btn color="brown" dark @click="dialogRequest = true">
         Request Peminjaman
       </v-btn>
       <v-btn color="brown" dark @click="dialog = true">
@@ -112,6 +112,42 @@
       </v-card>
     </v-dialog>
 
+    <!-- Dialog dialogRequest  -->
+    <v-dialog v-model="dialogRequest" persistent max-width="1000px">
+      <v-card>
+        <v-card-title
+          >Request Peminjaman
+          <v-spacer></v-spacer>
+          <v-icon @click="close">mdi-close</v-icon>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+          <v-data-table :headers="headerReq" :items="request" :search="search">
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-btn
+                color="brown"
+                dark
+                small
+                class="mr-2"
+                @click="cancelRequest(item)"
+              >
+                Cancel
+              </v-btn>
+              <v-btn color="success" small @click="confirm(item)">
+                Confirm
+              </v-btn>
+            </template>
+          </v-data-table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
     <!-- Dialog Delete -->
     <v-dialog v-model="dialogConfirm" persistent max-width="400px">
       <v-card>
@@ -134,7 +170,6 @@
   </v-main>
 </template>
 
-
 <script>
 export default {
   name: "List",
@@ -151,12 +186,25 @@ export default {
       dialog: false,
       dialogConfirm: false,
       dialogEdit: false,
+      dialogRequest: false,
+      headerReq: [
+        {
+          text: "ISBN",
+          align: "start",
+          sortable: true,
+          value: "ISBN",
+        },
+        { text: "Judul", value: "Judul" },
+        { text: "Peminjam", value: "peminjam" },
+        { text: "Tanggal Peminjaman", value: "tgl_pinjam" },
+        { text: "Actions", value: "actions" },
+      ],
       headers: [
         {
           text: "ID Peminjaman",
           align: "start",
           sortable: true,
-          value: "id",
+          value: "id_peminjaman",
         },
         { text: "ISBN", value: "ISBN" },
         { text: "Peminjam", value: "peminjam" },
@@ -182,6 +230,7 @@ export default {
       deleteId: "",
       editId: "",
       item: [],
+      request: [],
     };
   },
   methods: {
@@ -195,29 +244,19 @@ export default {
     //read data peminjaman
     readData() {
       this.getPeminjaman();
+      this.getRequest();
+    },
+
+    getRequest() {
+      var url = this.$api + "/request";
+      this.get(url, "request");
     },
 
     getPeminjaman() {
       var url = this.$api + "/peminjaman";
-      this.$http
-        .get(url, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          this.peminjamans = response.data.data;
-          console.log(response.data.data);
-          console.log(this.peminjamans);
-        })
-        .catch((error) => {
-          this.error_message = error.response.data.message;
-          this.color = "red";
-          this.snackbar = true;
-          console.log(error.response);
-        });
+      this.get(url, "peminjaman");
     },
-    //simpan data produk
+
     save() {
       let id = "PG" + Math.floor(Math.random() * 10000);
       this.peminjaman.append("id_peminjaman", id);
@@ -228,6 +267,57 @@ export default {
 
       var url = this.$api + "/peminjaman/";
       this.load = true;
+      this.post(url, this.peminjaman);
+    },
+
+    cancelRequest(item) {
+      var url = this.$api + "/request/" + item.id;
+      this.delete(url);
+    },
+
+    deleteData() {
+      var url = this.$api + "/peminjaman/" + this.deleteId;
+      this.delete(url);
+      this.dialogConfirm = false;
+    },
+
+    confirm(item) {
+      let id = "PJM" + Math.floor(Math.random() * 10000);
+      this.peminjaman.append("id_peminjaman", id);
+      this.peminjaman.append("ISBN", item.ISBN);
+      this.peminjaman.append("peminjam", item.peminjam);
+      this.peminjaman.append("tgl_pinjam", item.tgl_pinjam);
+      this.peminjaman.append("status", "Dipinjam");
+
+      var url = this.$api + "/peminjaman/";
+      this.load = true;
+      this.post(url);
+      var urldelete = this.$api + "/request/" + item.id;
+      this.delete(urldelete);
+    },
+
+    get(url, data) {
+      this.$http
+        .get(url, {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          if (data == "peminjaman") {
+            this.peminjamans = response.data.data;
+          } else if (data == "request") {
+            this.request = response.data.data;
+          }
+        })
+        .catch((error) => {
+          this.error_message = error.response.data.message;
+          this.color = "red";
+          this.snackbar = true;
+        });
+    },
+
+    post(url) {
       this.$http
         .post(url, this.peminjaman, {
           headers: {
@@ -250,7 +340,7 @@ export default {
           this.load = false;
         });
     },
-    //ubah data produk
+
     update() {
       let newData = {
         status: this.form.status,
@@ -281,11 +371,8 @@ export default {
           this.load = false;
         });
     },
-    //hapus data produk
-    deleteData() {
-      //mengahapus data
-      var url = this.$api + "/peminjaman/" + this.deleteId;
-      //data dihapus berdasarkan id
+
+    delete(url) {
       this.$http
         .delete(url, {
           headers: {
@@ -295,7 +382,7 @@ export default {
         .then((response) => {
           this.error_message = response.data.message;
           this.color = "green";
-          this.dialogConfirm = false;
+
           this.snackbar = true;
           this.load = false;
           this.close();
@@ -310,6 +397,7 @@ export default {
           this.load = false;
         });
     },
+
     editHandler(item) {
       this.inputType = "Ubah";
       this.editId = item.id;
@@ -319,14 +407,18 @@ export default {
       this.form.harga_jual = item.harga_jual;
       this.dialogEdit = true;
     },
+
     deleteHandler(id) {
       this.deleteId = id;
       this.dialogConfirm = true;
     },
+
     close() {
       this.dialog = false;
+      this.dialogRequest = false;
       this.inputType = "Tambah";
     },
+
     cancel() {
       this.resetForm();
       this.readData();
@@ -334,6 +426,7 @@ export default {
       this.dialogEdit = false;
       this.inputType = "Tambah";
     },
+
     resetForm() {
       this.form = {
         nama_produk: null,

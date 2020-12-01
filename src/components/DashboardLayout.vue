@@ -32,7 +32,7 @@
     </v-navigation-drawer>
     <v-app-bar app fixed height="75px">
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <h1>Dashboard</h1>
+      <h1 id="judul">Dashboard</h1>
       <VSpacer />
 
       <v-toolbar-items>
