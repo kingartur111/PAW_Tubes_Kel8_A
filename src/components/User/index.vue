@@ -27,6 +27,11 @@
         <v-btn value="profil" @click="pindahPage(3)">
           <span class="whiteText"> Profil </span>
         </v-btn>
+        <v-btn value="profil" @click="pindahPage(5)">
+          <span class="whiteText">
+            Find Us
+          </span>
+        </v-btn>
       </v-btn-toggle>
       <V-Spacer />
 

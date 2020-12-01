@@ -168,6 +168,7 @@
       </v-card>
     </div>
   </main>
+  
 </template>
 
 <style>

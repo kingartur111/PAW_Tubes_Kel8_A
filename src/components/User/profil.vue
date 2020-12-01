@@ -37,6 +37,12 @@
           </span>
         </v-btn>
 
+        <v-btn value="profil" @click="pindahPage(5)">
+          <span class="whiteText">
+            Find Us
+          </span>
+        </v-btn>
+
       </v-btn-toggle>
       <V-Spacer />
 
@@ -239,7 +245,7 @@
        name:'',
        image:null, 
         items: [
-         'User Detail', 'Edit Profile', 'Ubah Password'
+         'User Detail', 'Edit Profile', 'Ubah Password', 
         ],
         profile: [
          '', 'ID Anggota', 'Nama', 'Email', 
