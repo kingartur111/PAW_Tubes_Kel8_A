@@ -193,6 +193,8 @@
         });
     },
     pinjamBuku(id){
+      
+      
 
       this.$http.get(this.$api + '/buku/'+ id,{
          headers: {
@@ -208,11 +210,15 @@
           this.snackbar = true;
         });
 
-        this.$http.post(this.$api+'/request',{
+        var currentDateWithFormat = new Date().toJSON().slice(0,10).replace(/-/g,'-');
+
+            
+
+        this.$http.post(this.$api+'/requestBuku',{
           'Judul': this.pinjam.Judul,
           'ISBN': this.pinjam.ISBN,
           'peminjam': localStorage.getItem("id"),
-          'tgl_pinjam': new Date().toLocaleString(),
+          'tgl_pinjam': currentDateWithFormat,
 
         },{
            headers: {
