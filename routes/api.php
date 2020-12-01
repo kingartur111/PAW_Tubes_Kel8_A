@@ -25,7 +25,11 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('user/{id}', 'Api\AuthController@update');
     Route::get('user/{id}', 'Api\AuthController@getUser');
     // Peminjaman
-
+    Route::get('peminjaman', 'Api\PeminjamanController@index');
+    Route::get('peminjaman/{id}', 'Api\PeminjamanController@show');
+    Route::post('peminjaman', 'Api\PeminjamanController@store');
+    Route::put('peminjaman/{id}', 'Api\PeminjamanController@update');
+    Route::delete('peminjaman/{id}', 'Api\PeminjamanController@destroy');
 
     // Buku
     Route::get('buku', 'Api\BukuController@index');
@@ -33,6 +37,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::post('buku', 'Api\BukuController@store');
     Route::put('buku/{id}', 'Api\BukuController@update');
     Route::delete('buku/{id}', 'Api\BukuController@destroy');
+    Route::get('isbn', 'Api\BukuController@getISBN');
 
     // Pegawai
     Route::get('pegawai', 'Api\PegawaiController@index');
