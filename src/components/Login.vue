@@ -237,9 +237,16 @@ export default {
             this.snackbar = true;
             this.load = false;
             this.clear();
-            this.$router.push({
+            if(response.data.user.status == "admin"){
+              this.$router.push({
+              path: "/dashboard",
+            });
+            }else{
+              this.$router.push({
               path: "/index",
             });
+            }
+
             console.log("test");
           })
           .catch((error) => {
