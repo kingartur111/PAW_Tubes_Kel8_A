@@ -167,7 +167,8 @@ class AuthController extends Controller
         ], 400);
     }
 
-    public function getUser($id){
+    public function getUser($id)
+    {
         $user = User::find($id);
         if (!is_null($user)) {
             return response([
@@ -181,5 +182,4 @@ class AuthController extends Controller
             'user' => null
         ], 404);
     }
-
 }

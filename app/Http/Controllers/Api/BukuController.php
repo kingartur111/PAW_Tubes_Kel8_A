@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class BukuController extends Controller
@@ -52,7 +54,7 @@ class BukuController extends Controller
             'pengarang' => 'required|alpha',
             'kategori' => 'required|alpha',
             'tahun' => 'required|numeric',
-            'bahasa' => 'required|alpha',
+            'bahasa' => 'required',
             'image' => 'alpha'
         ]);
 
@@ -81,7 +83,12 @@ class BukuController extends Controller
 
     public function destroy($id)
     {
+        // Cari buku dari database berdasarkan id
         $buku = Buku::find($id);
+        // Delete File image in public
+        $path = public_path();
+        File::delete($path . $buku->image);
+
 
         if (is_null($buku)) {
             return response([
@@ -90,6 +97,7 @@ class BukuController extends Controller
             ], 404);
         }
 
+        // Delete Buku
         if ($buku->delete()) {
             return response([
                 'message' => 'Delete Buku Success',
@@ -161,4 +169,18 @@ class BukuController extends Controller
             'data' => null,
         ], 400);
     }
+    // public function getISBN()
+    // {
+    //     $ISBN = DB::table('bukus')->pluck('ISBN');
+    //     if ($ISBN) {
+    //         return response([
+    //             'message' => 'Update User Success',
+    //             'data' => $ISBN,
+    //         ], 200);
+    //     }
+    //     return response([
+    //         'message' => 'Update User Failed',
+    //         'data' => null,
+    //     ], 400);
+    // }
 }
