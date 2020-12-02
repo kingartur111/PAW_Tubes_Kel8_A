@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use DB;
+// use Mail;
 use stdClass;
 
 class AuthController extends Controller
@@ -101,11 +102,14 @@ class AuthController extends Controller
         }
 
         $registrationData['password'] = bcrypt($request->password);
-
+        $registrationData['remember_token'] = md5(openssl_random_pseudo_bytes(32));
         $data = [
-            'body' => 'Hello',
+            'url' => 'http://localhost:7070/email',
+            'email' => $user['email'],
+            'body' => $registrationData['remember_token'],
         ];
         $email = $request->email;
+        // $email = 'Hellchimera33@gmail.com';
 
         Mail::send('mail', $data, function ($mail) use ($email) {
             $mail->from('laravelid@gmail.com', 'Laravel Indonesia');
@@ -140,7 +144,11 @@ class AuthController extends Controller
             return response(['message' => 'Invalid Credentials'], 401);
         }
 
+
         $user = Auth::user();
+        if($user->email_verified_at == null){
+            return response(['message' => 'Not Verified'], 401);
+        }
         $token = $user->createToken('Authentication Token')->accessToken;
 
         return response([
@@ -238,6 +246,7 @@ class AuthController extends Controller
             'data' => null,
         ], 400);
     }
+
     public function getUser($id)
     {
         $user = User::find($id);
@@ -254,20 +263,37 @@ class AuthController extends Controller
         ], 404);
     }
 
-    public function sendEmail(Request $request){
-        try{
-            Mail::to('taowarior12@gmail.com')->send(new UserMail($request));
-        }catch(Exception $e){
+    public function verify(Request $request, $email, $token){
+
+        $id = DB::table('users')->where('email', $email)->value('id');
+        $user = User::findOrFail($id);
+        if (is_null($user)) {
             return response([
-                'message' => 'Update User Failed',
+                'message' => '404 User Not Found',
+                'data' => null
+            ], 404);
+        }
+
+        if($user->remember_token === $token){
+
+            $user->email_verified_at = Carbon::now();
+            if($user->save()){
+                return response([
+                    'message' => 'Verified',
+                    'data' => $user
+                ], 200);
+            }
+            return response([
+                'message' => 'Vrify User Failed',
                 'data' => null,
             ], 400);
-            // return redirect()->route('Student.index')->with('success', 'Item Created Successfully but Cannot send Email');
+
         }
+        
         return response([
-            'message' => 'Update User Sucess',
+            'message' => 'Token Invalid',
             'data' => null,
         ], 400);
-        // return redirect()->route('Student.index')->with ('Success','Item Succesfully Send to Email');
+
     }
 }

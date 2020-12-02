@@ -74,3 +74,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('buku', 'Api\BukuController@index');
 Route::post('email', 'Api\AuthController@sendEmail');
+Route::post('verify/{email}/{token}', 'Api\AuthController@verify');

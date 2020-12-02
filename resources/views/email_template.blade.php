@@ -8,6 +8,6 @@
 </head>
 <body>
     <h2>Congratulation</h2>
-    <p>{{ $body }} is created</p>
+    <p>Verification Code Is {{ $body }} is created</p>
 </body>
 </html>
