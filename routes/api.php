@@ -62,6 +62,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // Logout
     Route::post('logout', 'Api\AuthController@logout');
+
+    Route::post('email/verify/{id}', 'Api\VerifyController@verify')->name('verification.verify');
+    Route::post('email/resend', 'Api\VerifyController@resend')->name('verification.resend');
 });
 
 // get CurrentUser
@@ -70,3 +73,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('buku', 'Api\BukuController@index');
+Route::post('email', 'Api\AuthController@sendEmail');

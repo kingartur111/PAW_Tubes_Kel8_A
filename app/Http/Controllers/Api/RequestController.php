@@ -53,7 +53,7 @@ class RequestController extends Controller
             'Judul' => 'required',
             'ISBN' => 'required',
             'peminjam' => 'required',
-            // 'tgl_pinjam' => 'required|date',
+            'tgl_pinjam' => 'required|date',
         ]);
 
         if ($validate->fails())
@@ -83,7 +83,7 @@ class RequestController extends Controller
             'Judul' => 'required',
             'ISBN' => 'required',
             'peminjam' => 'required',
-            // 'tgl_pinjam' => 'required|date',
+            'tgl_pinjam' => 'required|date',
         ]);
 
         if ($validate->fails())

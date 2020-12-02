@@ -10,6 +10,8 @@ use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use Mail;
+use App\Mail\VerifyMain;
 use stdClass;
 
 class AuthController extends Controller
@@ -219,7 +221,6 @@ class AuthController extends Controller
             'data' => null,
         ], 400);
     }
-
     public function getUser($id)
     {
         $user = User::find($id);
@@ -234,5 +235,22 @@ class AuthController extends Controller
             'message' => 'No User Were Found',
             'user' => null
         ], 404);
+    }
+
+    public function sendEmail(Request $request){
+        try{
+            Mail::to('taowarior12@gmail.com')->send(new VerifyMain($request));
+        }catch(Exception $e){
+            return response([
+                'message' => 'Update User Failed',
+                'data' => null,
+            ], 400);
+            // return redirect()->route('Student.index')->with('success', 'Item Created Successfully but Cannot send Email');
+        }
+        return response([
+            'message' => 'Update User Sucess',
+            'data' => null,
+        ], 400);
+        // return redirect()->route('Student.index')->with ('Success','Item Succesfully Send to Email');
     }
 }

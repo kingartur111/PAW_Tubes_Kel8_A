@@ -15,6 +15,7 @@
         "laravel/framework": "^7.29",
         "laravel/passport": "9.*",
         "laravel/tinker": "^2.5",
+        "laravel/ui": "^3.1",
         "lcobucci/jwt": "3.3.3"
     },
     "require-dev": {
