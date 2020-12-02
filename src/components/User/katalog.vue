@@ -215,10 +215,10 @@ export default {
         });
     },
 
-    pinjamBuku(item) {
-      var url = this.$api + "/request";
-      this.post(url, item);
-    },
+    // pinjamBuku(item) {
+    //   var url = this.$api + "/request";
+    //   this.post(url, item);
+    // },
   },
   mounted() {
     this.readData();

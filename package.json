@@ -11,9 +11,12 @@
     "axios": "^0.21.0",
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
+    "jspdf": "^2.1.1",
+    "jspdf-autotable": "^3.5.13",
     "mapbox-gl": "^1.13.0",
     "vue": "^2.6.11",
     "vue-chartkick": "^0.6.1",
+    "vue-html2pdf": "^1.8.0",
     "vue-router": "^3.4.9",
     "vuetify": "^2.3.19",
     "vuex": "^3.5.1"

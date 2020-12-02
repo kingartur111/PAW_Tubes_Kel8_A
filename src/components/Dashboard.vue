@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <div class="d-flex justify-end mb-6 mx-5">
-      <v-btn color="brown" dark @click="dialog = true"> Print Pdf</v-btn>
+      <v-btn color="brown" dark @click="download"> Print Pdf</v-btn>
     </div>
     <v-row no-gutters>
       <v-col v-for="item in card" :key="item.title" class="mx-5">
@@ -44,6 +44,10 @@
 </template>
 
 <script>
+import { jsPDF } from "jspdf";
+import { autoTable } from "jspdf-autotable";
+// import VueHtml2pdf from "vue-html2pdf";
+
 export default {
   data() {
     return {
@@ -76,7 +80,8 @@ export default {
           text: "0",
         },
       ],
-
+      items: [],
+      itemtotal: [],
       // title: this.$router.title,
     };
   },
@@ -99,7 +104,7 @@ export default {
         (this.oct = arr.oct),
         (this.nov = arr.nov),
         (this.des = arr.des),
-        console.log(this.des);
+        this.pushItem();
     },
     get(url, data) {
       this.$http
@@ -138,6 +143,54 @@ export default {
     peminjaman() {
       var url = this.$api + "/peminjaman";
       this.get(url, "peminjaman");
+    },
+    pushItem() {
+      this.items.push({ title: "Januari", body: this.jan });
+      this.items.push({ title: "Februari", body: this.feb });
+      this.items.push({ title: "Maret", body: this.mar });
+      this.items.push({ title: "April", body: this.apr });
+      this.items.push({ title: "Mei", body: this.mei });
+      this.items.push({ title: "Juni", body: this.jun });
+      this.items.push({ title: "July", body: this.jul });
+      this.items.push({ title: "Agustus", body: this.aug });
+      this.items.push({ title: "September", body: this.sep });
+      this.items.push({ title: "Oktober", body: this.oct });
+      this.items.push({ title: "November", body: this.nov });
+      this.items.push({ title: "Desember", body: this.des });
+
+      // this.itemtotal.push({ title: "Total User", body: this.card[0].text})
+      // this.itemtotal.push({ title: "Total Buku", body: this.card[1].text})
+      // this.itemtotal.push({ title: "Total Peminjaman", body: this.card[2].text})
+    },
+    download() {
+      const columns = [
+        { title: "Bulan", dataKey: "title" },
+        { title: "Jumlah User", dataKey: "body" },
+      ];
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "in",
+        format: "letter",
+      });
+
+      doc.setFontSize(16).text("Perpus Tadika Mesra", 0.5, 1.0);
+      doc.setLineWidth(0.01).line(0.5, 1.1, 8.0, 1.1);
+
+      doc
+        .setFontSize(12)
+        .text("A. Data Pertambahan User di tahun 2020", 0.5, 1.5);
+      doc.autoTable({
+        columns,
+        body: this.items,
+        margin: { left: 0.5, top: 1.75 },
+      });
+      // doc.setFontSize(12).text("B. Data Keseluruhan Perusahaan", 0.5, 8.0);
+      // doc.autoTable({
+      //   columns,
+      //   body: this.itemtotal,
+      //   margin: { left: 0.5, top: 8.75 },
+      // });
+      doc.save("Laporan.pdf");
     },
   },
   mounted() {
