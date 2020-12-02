@@ -269,6 +269,10 @@
               this.$router.push({
               name: 'profil'
             })
+        }else if(nomor == 5){
+        this.$router.push({
+          name:'geo'
+        })
         }else{
               this.$router.push({
               name: 'login'

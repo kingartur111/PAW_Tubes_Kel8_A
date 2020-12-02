@@ -34,8 +34,8 @@
         </v-btn>
       </v-btn-toggle>
       <V-Spacer />
-
-      <v-btn rounded @click="pindahPage(4)">Login/Register</v-btn>
+      <v-btn v-if="!login" rounded @click="pindahPage(4)">Login/Register</v-btn>
+       <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
     </v-app-bar>
 
     <v-card>
@@ -113,6 +113,8 @@ export default {
     return {
       navbarBtn: "home",
       sticky: false,
+      login:false,
+      user:[]
     };
   },
   methods: {
@@ -129,7 +131,12 @@ export default {
         this.$router.push({
           name: "profil",
         });
-      } else {
+      }else if(nomor == 5){
+        this.$router.push({
+          name:'geo'
+        })
+      }
+       else {
         this.$router.push({
           name: "login",
         });
@@ -145,5 +152,15 @@ export default {
        });
       }
   },
+  mounted(){
+    this.$http.get(this.$api + '/user',
+        {headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+                }})
+          .then(response=>{
+           this.login = true;
+           this.user=response
+          })
+  }
 };
 </script>

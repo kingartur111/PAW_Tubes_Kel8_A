@@ -28,9 +28,7 @@
           <span class="whiteText"> Profil </span>
         </v-btn>
 
-        <v-btn value="profil" @click="pindahPage(5)">
-          <span class="whiteText"> Find Us </span>
-        </v-btn>
+
       </v-btn-toggle>
       <V-Spacer />
 
@@ -133,6 +131,7 @@ export default {
     error_message: "",
     color: "",
     login:false,
+    user:[]
   }),
 
   methods: {
@@ -149,7 +148,12 @@ export default {
         this.$router.push({
           name: "profil",
         });
-      } else {
+
+      } else if(nomor == 5){
+        this.$router.push({
+          name:'geo'
+        })
+      }else {
         this.$router.push({
           name: "login",
         });
@@ -233,8 +237,8 @@ export default {
                     "Authorization" : `Bearer ${localStorage.getItem("token")}`
                 }})
           .then(response=>{
-            this.login = true;
-          
+           this.login = true;
+           this.user=response
           })
     this.readData();
   },
