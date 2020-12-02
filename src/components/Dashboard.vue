@@ -45,7 +45,7 @@
 
 <script>
 import { jsPDF } from "jspdf";
-import { autoTable } from "jspdf-autotable";
+// import { autoTable } from "jspdf-autotable";
 // import VueHtml2pdf from "vue-html2pdf";
 
 export default {

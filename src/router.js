@@ -17,6 +17,14 @@ const router = new VueRouter({
         {
             path: "/admin",
             component: importComponent('DashboardLayout'),
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id') == 1) {
+                    next();
+                } else {
+                    router.replace('/index');
+                }
+            },
             children: [
                 //Dashboard
                 {
@@ -56,6 +64,14 @@ const router = new VueRouter({
             path: '/index',
             name: 'index',
             meta: { title: 'index' },
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id') != 1) {
+                    next();
+                } else {
+                    router.replace('/dashboard');
+                }
+            },
             component: importComponent('User/index'),
         },
         // Login
@@ -69,18 +85,42 @@ const router = new VueRouter({
             path: '/profil',
             name: 'profil',
             meta: { title: 'Profil' },
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id') != 1) {
+                    next();
+                } else {
+                    router.replace('/dashboard');
+                }
+            },
             component: importComponent('User/profil'),
         },
         {
             path: '/katalog',
             name: 'katalog',
             meta: { title: 'Katalog' },
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id') != 1) {
+                    next();
+                } else {
+                    router.replace('/dashboard');
+                }
+            },
             component: importComponent('User/katalog'),
         },
         {
             path: '/geoloc',
             name: 'geo',
             meta: { title: 'geo' },
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id') != 1) {
+                    next();
+                } else {
+                    router.replace('/dashboard');
+                }
+            },
             component: importComponent('User/geoloc'),
         },
         {
@@ -92,21 +132,20 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title;
-    next()
-    //     if (to.matched.some(record => record.meta.requiredAuth)) {
-    //         if (localStorage.getItem('token')) {
-    //             //user is authenticated
-    //             next();
-    //         }
-    //         else {
-    //             //user is not authenticated
-    //             router.replace('/login')
-    //         }
-    //     } else {
-    //         next() // make sure to always call next()!
-    //         console.log('MASUK SINI')
-    //         console.log(to.matched.some(record => record.meta.requiredAuth))
-    //     }
+    if (to.matched.some(record => record.meta.requiredAuth)) {
+        if (localStorage.getItem('token')) {
+            //user is authenticated
+            next();
+        }
+        else {
+            //user is not authenticated
+            router.replace('/login')
+        }
+    } else {
+        next() // make sure to always call next()!
+        console.log('MASUK SINI')
+        console.log(to.matched.some(record => record.meta.requiredAuth))
+    }
 })
 
 export default router;
