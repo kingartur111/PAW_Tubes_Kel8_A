@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('peminjaman/{id}', 'Api\PeminjamanController@destroy');
 
     // Buku
-
+    Route::get('buku', 'Api\BukuController@index');
     Route::get('buku/{id}', 'Api\BukuController@show');
     Route::post('buku', 'Api\BukuController@store');
     Route::put('buku/{id}', 'Api\BukuController@update');

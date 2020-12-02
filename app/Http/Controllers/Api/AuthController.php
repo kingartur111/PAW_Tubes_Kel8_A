@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\UserMail;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use DB;
-use Mail;
-use App\Mail\VerifyMain;
 use stdClass;
 
 class AuthController extends Controller
@@ -101,6 +101,23 @@ class AuthController extends Controller
         }
 
         $registrationData['password'] = bcrypt($request->password);
+
+        $data = [
+            'body' => 'Hello',
+        ];
+        $email = $request->email;
+
+        Mail::send('mail', $data, function ($mail) use ($email) {
+            $mail->from('laravelid@gmail.com', 'Laravel Indonesia');
+            $mail->to($email, 'Verification');
+        });
+        // Mail::to($email)->send(new UserMail($data));
+        if (Mail::failures()) {
+            return response([
+                'message' => 'Failed to send email',
+                'data' => null
+            ], 404);
+        }
         $user = User::create($registrationData);
         return response([
             'message' => 'Register Success',
@@ -239,7 +256,7 @@ class AuthController extends Controller
 
     public function sendEmail(Request $request){
         try{
-            Mail::to('taowarior12@gmail.com')->send(new VerifyMain($request));
+            Mail::to('taowarior12@gmail.com')->send(new UserMail($request));
         }catch(Exception $e){
             return response([
                 'message' => 'Update User Failed',
