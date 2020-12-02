@@ -79,6 +79,14 @@ const router = new VueRouter({
             path: '/login',
             name: 'login',
             meta: { title: 'Login' },
+            beforeEnter(to, from, next) {
+                // logic here
+                if (localStorage.getItem('id')) {
+                    localStorage.getItem('id') == 1 ? router.replace('/dashboard') : router.replace('/index');
+                } else {
+                    next();
+                }
+            },
             component: importComponent('Login'),
         },
         {
