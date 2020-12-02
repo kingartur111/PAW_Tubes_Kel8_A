@@ -30,13 +30,13 @@
           <span class="whiteText"> Profil </span>
         </v-btn>
 
-        <v-btn value="geo" @click="pindahPage(5)">
+        <v-btn value="geo" @click="pindahPage(4)">
           <span class="whiteText"> Find Us </span>
         </v-btn>
       </v-btn-toggle>
         <V-Spacer />
 
-        <v-btn v-if="!login" rounded @click="pindahPage(4)">Login/Register</v-btn>
+        <v-btn v-if="!login" rounded @click="pindahPage(5)">Login/Register</v-btn>
        <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
       </v-app-bar>
 
@@ -110,6 +110,7 @@ export default {
 
       accLogout(){
         localStorage.removeItem("token");
+        localStorage.removeItem("id");
         console.log(localStorage.getItem("token"));
         delete this.$http.defaults.headers.common["Authorization"];
         console.log(this.$http.defaults.headers.common["Authorization"]);
@@ -131,9 +132,9 @@ export default {
           name: "profil",
         });
 
-      } else if(nomor == 5){
+      } else if(nomor == 4){
         this.$router.push({
-          name:'geo'
+          name:'geoloc'
         })
       }else {
         this.$router.push({

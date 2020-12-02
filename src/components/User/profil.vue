@@ -37,7 +37,7 @@
           </span>
         </v-btn>
 
-        <v-btn value="geo" @click="pindahPage(5)">
+        <v-btn value="geo" @click="pindahPage(4)">
           <span class="whiteText">
             Find Us
           </span>
@@ -388,6 +388,7 @@
 
       accLogout(){
         localStorage.removeItem("token");
+        localStorage.removeItem("id");
         console.log(localStorage.getItem("token"));
         delete this.$http.defaults.headers.common["Authorization"];
         console.log(this.$http.defaults.headers.common["Authorization"]);

@@ -144,6 +144,7 @@ export default {
     },
     accLogout(){
       localStorage.removeItem("token");
+      localStorage.removeItem("id");
       console.log(localStorage.getItem("token"));
       delete this.$http.defaults.headers.common["Authorization"];
       console.log(this.$http.defaults.headers.common["Authorization"]);
