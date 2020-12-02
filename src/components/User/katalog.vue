@@ -16,7 +16,7 @@
         rounded
         group
       >
-        <v-btn value="home" @click="pindahPage(1)">
+          <v-btn value="home" @click="pindahPage(1)">
           <span class="whiteText"> Home </span>
         </v-btn>
 
@@ -26,6 +26,10 @@
 
         <v-btn value="profil" @click="pindahPage(3)">
           <span class="whiteText"> Profil </span>
+        </v-btn>
+
+        <v-btn value="geo" @click="pindahPage(5)">
+          <span class="whiteText"> Find Us </span>
         </v-btn>
 
 
@@ -47,11 +51,12 @@
           flat
           style="margin-top: 10%; background: rgba(0, 0, 0, 0)"
         >
-          <v-toolbar dense width="50%" style="margin-start: 26%">
+              <v-toolbar dense width="50%" style="margin-start: 26%">
             <v-text-field
               hide-details
               label="Cari Buku"
               single-line
+              v-model="search"
             ></v-text-field>
 
             <v-btn icon>
@@ -60,47 +65,22 @@
 
             <v-select
               :items="items"
+              v-model="filter"
               hide-details
               label="Filled style"
               style="width: 0.5%"
               single-line
             ></v-select>
           </v-toolbar>
+         <v-data-table :headers="headers" :items="tableItems"  :search="search" dense width="50%" style="margin-start: 26%;margin-end:24%">
+             <template v-slot:[`item.actions`]="{ item }">
+          <v-btn small color="brown" class="mr-2" @click="pinjamBuku(item.id)">
+            Pinjam
+          </v-btn>
+        </template>
+         </v-data-table>
         </v-card>
-        <v-card
-          v-for="data in books"
-          :key="data.index"
-          class="mx-auto"
-          max-width="auto"
-          flat
-          style="margin-top: 10px; background: rgba(0, 0, 0, 0)"
-        >
-          <v-card width="50%" style="margin-start: 26%">
-            <v-layout row>
-              <v-flex xs7>
-                <v-card-title primary-title>
-                  <div>
-                    <div class="headline">{{ data.Judul }}</div>
-                    <div>{{ data.pengarang }}</div>
-                    <div>{{ data.tahun }}</div>
-                  </div>
-                </v-card-title>
-              </v-flex>
-              <v-flex xs5>
-                <v-img
-                  v-bind:src="'http://127.0.0.1:8000/' + data.image"
-                  style="width: 100px; height: 100px"
-                ></v-img>
-              </v-flex>
-            </v-layout>
-            <v-divider light></v-divider>
-            <v-card-actions class="pa-3">
-              Penerbit: {{ data.penerbit }}
-              <v-spacer></v-spacer>
-              <v-btn color="brown" @click="pinjamBuku(data)">Pinjam</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-card>
+
       </v-img>
     </v-card>
 
@@ -129,9 +109,24 @@ export default {
     peminjam: "",
     snackbar: false,
     error_message: "",
+    search:'',
     color: "",
     login:false,
-    user:[]
+    user:[],
+    filter:'',
+    headers: [
+        {
+          text: "ISBN",
+          align: "start",
+          sortable: true,
+          value: "ISBN",
+        },
+        { text: "Judul Buku", value: "Judul" },
+        { text: "Pengarang", value: "pengarang" },
+        { text: "Kategori", value: "kategori" },
+        { text: "Tahun Terbit", value: "tahun" },
+        { text: "Actions", value: "actions" },
+      ],
   }),
 
   methods: {
@@ -188,6 +183,7 @@ export default {
           this.error_message = response.data.message;
           this.color = "green";
           this.snackbar = true;
+          this.pinjam = response.data.data
         });
 
       var currentDateWithFormat = new Date()
@@ -230,6 +226,21 @@ export default {
           path: "/login",
         });
       }
+  },
+  computed: {
+    filteredItems() {
+
+      return this.books.filter((i) => {
+        return !this.filter || (i.kategori === this.filter);
+      })
+    },
+     tableItems () {
+      if (!this.filter) {
+        return this.books;
+      }
+
+      return this.books.filter(item => item.kategori.indexOf(this.filter) > -1)
+    }
   },
   mounted() {
         this.$http.get(this.$api + '/user',
