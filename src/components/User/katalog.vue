@@ -34,7 +34,8 @@
       </v-btn-toggle>
       <V-Spacer />
 
-      <v-btn rounded @click="pindahPage(4)">Login/Register</v-btn>
+      <v-btn v-if="!login" rounded @click="pindahPage(4)">Login/Register</v-btn>
+       <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
     </v-app-bar>
 
     <v-card>
@@ -131,6 +132,7 @@ export default {
     snackbar: false,
     error_message: "",
     color: "",
+    login:false,
   }),
 
   methods: {
@@ -215,12 +217,25 @@ export default {
         });
     },
 
-    // pinjamBuku(item) {
-    //   var url = this.$api + "/request";
-    //   this.post(url, item);
-    // },
+      accLogout(){
+        localStorage.removeItem("token");
+        console.log(localStorage.getItem("token"));
+        delete this.$http.defaults.headers.common["Authorization"];
+        console.log(this.$http.defaults.headers.common["Authorization"]);
+        this.$router.push({
+          path: "/login",
+        });
+      }
   },
   mounted() {
+        this.$http.get(this.$api + '/user',
+        {headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+                }})
+          .then(response=>{
+            this.login = true;
+          
+          })
     this.readData();
   },
 };

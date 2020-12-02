@@ -37,7 +37,7 @@
           </span>
         </v-btn>
 
-        <v-btn value="profil" @click="pindahPage(5)">
+        <v-btn value="geo" @click="pindahPage(5)">
           <span class="whiteText">
             Find Us
           </span>
@@ -45,7 +45,6 @@
 
       </v-btn-toggle>
       <V-Spacer />
-
           <v-btn rounded color="error" @click="accLogout()">Logout</v-btn>
     </v-app-bar>
 
@@ -377,29 +376,20 @@
             this.snackbar= true
             this.$router.push({
             name: 'login'
-      })
           })
+        })
 
 
       },
 
-       accLogout(){
-        // this.$http.post(this.$api + '/logout',{headers: {
-        //             "Authorization" : `Bearer ${localStorage.getItem("token")}`
-        //         }}).then(response=>{
-        //         this.error_message = response.data.message;
-        //         this.img = response.data.data.image;
-        //         this.color="green"
-        //         this.snackbar=true;
-
-               
-        //     }).catch(error=> {
-        //         this.error_message = error.response.data.message;
-        //         this.color = "red"
-        //         this.snackbar= true
-        //     })
-                localStorage.removeItem("token")
-                localStorage.removeItem("id")
+      accLogout(){
+        localStorage.removeItem("token");
+        console.log(localStorage.getItem("token"));
+        delete this.$http.defaults.headers.common["Authorization"];
+        console.log(this.$http.defaults.headers.common["Authorization"]);
+        this.$router.push({
+          path: "/login",
+        });
     },
    
       

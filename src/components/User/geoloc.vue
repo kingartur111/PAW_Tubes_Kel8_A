@@ -200,6 +200,15 @@ export default {
       this.regisData.pass = "";
       this.regisData.conPass = "";
     },
+          accLogout(){
+        localStorage.removeItem("token");
+        console.log(localStorage.getItem("token"));
+        delete this.$http.defaults.headers.common["Authorization"];
+        console.log(this.$http.defaults.headers.common["Authorization"]);
+        this.$router.push({
+          path: "/login",
+        });
+      }
   },
 };
 </script>
