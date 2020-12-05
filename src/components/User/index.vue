@@ -6,36 +6,37 @@
       height="75px"
       style="background: rgba(61, 30, 26, 0.8)"
     >
-      <v-avatar color="primary" size="40" tile></v-avatar>
       <h3 style="color: white">Perpustakaan Tadika Mesra</h3>
-      <V-Spacer />
-      <v-btn-toggle
-        v-model="navbarBtn"
-        tile
-        color="white accent-3"
-        rounded
-        group
-      >
-        <v-btn value="home" @click="pindahPage(1)">
-          <span class="whiteText"> Home </span>
-        </v-btn>
 
-        <v-btn value="katalog" @click="pindahPage(2)">
-          <span class="whiteText"> Katalog </span>
-        </v-btn>
+      <v-flex>
+        <v-btn-toggle
+          tile
+          color="white accent-3"
+          class="d-flex justify-center"
+          align="center"
+          justify="center"
+          style="margin-left: -50px"
+          rounded
+          group
+        >
+          <v-btn value="home" @click="pindahPage(1)">
+            <span class="whiteText"> Home </span>
+          </v-btn>
 
-        <v-btn value="profil" @click="pindahPage(3)">
-          <span class="whiteText"> Profil </span>
-        </v-btn>
-        <v-btn value="profil" @click="pindahPage(5)">
-          <span class="whiteText">
-            Find Us
-          </span>
-        </v-btn>
-      </v-btn-toggle>
-      <V-Spacer />
-      <v-btn v-if="!login" rounded @click="pindahPage(4)">Login/Register</v-btn>
-       <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
+          <v-btn value="katalog" @click="pindahPage(2)">
+            <span class="whiteText"> Katalog </span>
+          </v-btn>
+
+          <v-btn value="profil" @click="pindahPage(3)">
+            <span class="whiteText"> Profil </span>
+          </v-btn>
+
+          <v-btn value="geo" @click="pindahPage(5)">
+            <span class="whiteText"> Find Us </span>
+          </v-btn>
+        </v-btn-toggle>
+      </v-flex>
+      <v-hover> <v-btn router-link to="/login">Login/Register</v-btn> </v-hover>
     </v-app-bar>
 
     <v-card>
@@ -48,18 +49,6 @@
           max-width="auto"
           style="margin-top: 10%; background: rgba(0, 0, 0, 0)"
         >
-          <v-toolbar dense width="40%" style="margin-start: 32%">
-            <v-text-field
-              hide-details
-              label="Cari Buku"
-              single-line
-            ></v-text-field>
-
-            <v-btn icon>
-              <v-icon>mdi-magnify</v-icon>
-            </v-btn>
-          </v-toolbar>
-
           <v-card-text
             style="
               margin-top: 10%;
@@ -113,8 +102,8 @@ export default {
     return {
       navbarBtn: "home",
       sticky: false,
-      login:false,
-      user:[]
+      login: false,
+      user: [],
     };
   },
   methods: {
@@ -131,18 +120,17 @@ export default {
         this.$router.push({
           name: "profil",
         });
-      }else if(nomor == 5){
+      } else if (nomor == 5) {
         this.$router.push({
-          name:'geo'
-        })
-      }
-       else {
+          name: "geo",
+        });
+      } else {
         this.$router.push({
           name: "login",
         });
       }
     },
-    accLogout(){
+    accLogout() {
       localStorage.removeItem("token");
       localStorage.removeItem("id");
       console.log(localStorage.getItem("token"));
@@ -150,18 +138,20 @@ export default {
       console.log(this.$http.defaults.headers.common["Authorization"]);
       this.$router.push({
         path: "/login",
-       });
-      }
+      });
+    },
   },
-  mounted(){
-    this.$http.get(this.$api + '/user',
-        {headers: {
-                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
-                }})
-          .then(response=>{
-           this.login = true;
-           this.user=response
-          })
-  }
+  mounted() {
+    this.$http
+      .get(this.$api + "/user", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        this.login = true;
+        this.user = response;
+      });
+  },
 };
 </script>

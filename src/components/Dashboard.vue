@@ -45,7 +45,7 @@
 
 <script>
 import { jsPDF } from "jspdf";
-// import { autoTable } from "jspdf-autotable";
+import { autoTable } from "jspdf-autotable";
 // import VueHtml2pdf from "vue-html2pdf";
 
 export default {
@@ -172,13 +172,15 @@ export default {
         unit: "in",
         format: "letter",
       });
-
+      console.log(columns);
       doc.setFontSize(16).text("Perpus Tadika Mesra", 0.5, 1.0);
       doc.setLineWidth(0.01).line(0.5, 1.1, 8.0, 1.1);
 
       doc
         .setFontSize(12)
         .text("A. Data Pertambahan User di tahun 2020", 0.5, 1.5);
+
+      console.log(autoTable);
       doc.autoTable({
         columns,
         body: this.items,

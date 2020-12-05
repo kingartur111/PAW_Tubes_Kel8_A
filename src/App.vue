@@ -7,5 +7,12 @@
 <script>
 export default {
   name: "App",
+  data() {},
+  mounted() {
+    // window.onbeforeunload = function () {
+    //   var storage = window.localStorage;
+    //   storage.clear();
+    // };
+  },
 };
 </script>

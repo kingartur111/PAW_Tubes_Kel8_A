@@ -8,37 +8,36 @@
         height="75px"
         style="background: rgba(61, 30, 26, 0.8)"
       >
-        <v-avatar color="primary" size="40" tile></v-avatar>
         <h3 style="color: white">Perpustakaan Tadika Mesra</h3>
-        <V-Spacer />
-        <v-btn-toggle tile color="white accent-3" rounded group>
-          <v-btn value="home" @click="pindahPage(1)">
-          <span class="whiteText">
-            Home
-          </span>
-        </v-btn>
 
+        <v-flex>
+          <v-btn-toggle
+            tile
+            color="white accent-3"
+            class="d-flex justify-center"
+            align="center"
+            justify="center"
+            style="margin-left: -50px"
+            rounded
+            group
+          >
+            <v-btn value="home" @click="pindahPage(1)">
+              <span class="whiteText"> Home </span>
+            </v-btn>
 
-        <v-btn value="katalog" @click="pindahPage(2)">
-          <span class="whiteText">
-            Katalog
-          </span>
-        </v-btn>
-    
-        <v-btn value="profil" @click="pindahPage(3)">
-          <span class="whiteText">
-            Profil
-          </span>
-        </v-btn>
+            <v-btn value="katalog" @click="pindahPage(2)">
+              <span class="whiteText"> Katalog </span>
+            </v-btn>
 
-        <v-btn value="geo" @click="pindahPage(5)">
-          <span class="whiteText">
-            Find Us
-          </span>
-        </v-btn>
-        </v-btn-toggle>
-        <V-Spacer />
+            <v-btn value="profil" @click="pindahPage(3)">
+              <span class="whiteText"> Profil </span>
+            </v-btn>
 
+            <v-btn value="geo" @click="pindahPage(5)">
+              <span class="whiteText"> Find Us </span>
+            </v-btn>
+          </v-btn-toggle>
+        </v-flex>
         <v-btn rounded>Login/Register</v-btn>
       </v-app-bar>
 
@@ -49,22 +48,28 @@
         >
         </v-img>
 
-        <v-container fluid fill-height class="posisinya">
-          <v-layout flex align-center justify-center>
-            <v-flex xs12 sm6 elevation-6>
-              <v-card color="white" outlined>
-                <v-row>
-                  <v-col>
-                    <v-card-title v-if="toogleLogin">Login Page</v-card-title>
-                    <v-card-text v-if="toogleLogin" class="sizeCardView">
-                      <div>
-                        <v-form v-model="valid" ref="formlogin">
+        <v-container fluid fill-height class="posisinya d-flex justify-center">
+          <v-card class="elevation-12" width="400px">
+            <v-stepper v-model="e1">
+              <v-stepper-items>
+                <v-stepper-content step="1">
+                  <v-row>
+                    <v-col class="ma-6">
+                      <v-card-text>
+                        <div class="d-flex justify-center">
+                          <v-icon size="100px" color="brown"
+                            >mdi-account-circle</v-icon
+                          >
+                        </div>
+                        <h1 class="text-center display-3 brown--text">Login</h1>
+                        <div class="text-center" mt-4></div>
+                        <v-form ref="formlogin">
                           <v-text-field
                             label="E-mail"
                             v-model="email"
                             :rules="emailRules"
                             required
-                          ></v-text-field>
+                          />
                           <v-text-field
                             label="Password"
                             v-model="password"
@@ -73,53 +78,50 @@
                             :rules="passwordRules"
                             counter
                             required
-                          ></v-text-field>
-                          <v-card-subtitle
-                            >Belum Punya Akun?
-                            <button
-                              @click="toogleLogin = false"
-                              style="color: blue"
-                            >
-                              Register
-                            </button></v-card-subtitle
-                          >
-                          <v-layout justify-end>
-                            <v-btn
-                              color="brown"
-                              class="mr-2"
-                              @click="submit"
-                              :class="{
-                                'brown darken-1 white--text': valid,
-                                disabled: !valid,
-                              }"
-                              >Login
-                            </v-btn>
-                          </v-layout>
+                          />
                         </v-form>
+                        <a color="primary" @click="e1 = 2"> Register </a>
+                      </v-card-text>
+                      <div class="text-center mt-3">
+                        <v-btn
+                          rounded
+                          color="brown accent-3"
+                          @click="submit"
+                          dark
+                          >Login</v-btn
+                        >
                       </div>
-                    </v-card-text>
-                  </v-col>
+                    </v-col>
+                  </v-row>
+                </v-stepper-content>
 
-                  <v-col>
-                    <v-card-title v-if="!toogleLogin"
-                      >Register Page</v-card-title
-                    >
-                    <v-card-text v-if="!toogleLogin">
-                      <div>
-                        <v-form v-model="valid" ref="formReg">
+                <v-stepper-content step="2">
+                  <v-row>
+                    <v-col class="ma-6">
+                      <v-card-text>
+                        <div class="d-flex justify-center">
+                          <v-icon size="100px" color="brown"
+                            >mdi-account-circle</v-icon
+                          >
+                        </div>
+                        <h1 class="text-center display-3 brown--text">
+                          Register
+                        </h1>
+                        <div class="text-center" mt-4></div>
+                        <v-form ref="formReg">
                           <v-text-field
                             label="Nama Lengkap"
                             v-model="regisData.nama"
                             :rules="namaRules"
                             required
-                          ></v-text-field>
+                          />
                           <v-text-field
                             label="E-mail"
                             v-model="regisData.email"
                             :rules="emailRules"
                             type="email"
                             required
-                          ></v-text-field>
+                          />
                           <v-text-field
                             label="Password"
                             v-model="regisData.pass"
@@ -128,8 +130,7 @@
                             :rules="passwordRules"
                             counter
                             required
-                          ></v-text-field>
-
+                          />
                           <v-text-field
                             label="Confirm Password"
                             v-model="regisData.conPass"
@@ -137,46 +138,28 @@
                             min="8"
                             :rules="passwordRules"
                             required
-                          ></v-text-field>
-                          <v-card-subtitle
-                            >Sudah Punya Akun?
-                            <button
-                              @click="toogleLogin = true"
-                              style="color: blue"
-                            >
-                              Login
-                            </button></v-card-subtitle
-                          >
-                          <v-layout justify-end>
-                            <v-btn
-                              color="brown"
-                              class="mr-2"
-                              @click="submitReg"
-                              :class="{
-                                'brown darken-1 white--text': valid,
-                                disabled: !valid,
-                              }"
-                              >Register
-                            </v-btn>
-                          </v-layout>
+                          />
                         </v-form>
+                        <a color="primary" @click="e1 = 1"> Login </a>
+                      </v-card-text>
+                      <div class="text-center mt-3">
+                        <v-btn
+                          rounded
+                          color="brown accent-3"
+                          dark
+                          @click="submitReg"
+                          >Register</v-btn
+                        >
                       </div>
-                    </v-card-text>
-                  </v-col>
-                </v-row>
-
-                <v-card-text class="pt-4"> </v-card-text>
-              </v-card>
-              <v-snackbar
-                v-model="snackbar"
-                :color="color"
-                timeout="20000"
-                bottom
-              >
-                {{ error_message }}
-              </v-snackbar>
-            </v-flex>
-          </v-layout>
+                    </v-col>
+                  </v-row>
+                </v-stepper-content>
+              </v-stepper-items>
+            </v-stepper>
+          </v-card>
+          <v-snackbar v-model="snackbar" :color="color" timeout="20000" bottom>
+            {{ error_message }}
+          </v-snackbar>
         </v-container>
       </v-card>
     </div>
@@ -213,6 +196,7 @@ export default {
     return {
       load: false,
       snackbar: false,
+      e1: 1,
       error_message: "",
       toogleLogin: true,
       color: "",
@@ -241,16 +225,15 @@ export default {
         this.$router.push({
           name: "katalog",
         });
-      } else if (nomor == 3) {
+      } else if (nomor == 3 && localStorage.getItem("id")) {
         this.$router.push({
           name: "profil",
         });
-
-      } else if(nomor == 4){
+      } else if (nomor == 4) {
         this.$router.push({
-          name:'geo'
-        })
-      }else {
+          name: "geo",
+        });
+      } else {
         this.$router.push({
           name: "login",
         });

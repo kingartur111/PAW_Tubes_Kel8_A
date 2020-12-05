@@ -6,38 +6,37 @@
       height="75px"
       style="background: rgba(61, 30, 26, 0.8)"
     >
-      <v-avatar color="primary" size="40" tile></v-avatar>
       <h3 style="color: white">Perpustakaan Tadika Mesra</h3>
-      <V-Spacer />
-      <v-btn-toggle
-        v-model="navbarBtn"
-        tile
-        color="white accent-3"
-        rounded
-        group
-      >
+
+      <v-flex>
+        <v-btn-toggle
+          tile
+          color="white accent-3"
+          class="d-flex justify-center"
+          align="center"
+          justify="center"
+          style="margin-left: -50px"
+          rounded
+          group
+        >
           <v-btn value="home" @click="pindahPage(1)">
-          <span class="whiteText"> Home </span>
-        </v-btn>
+            <span class="whiteText"> Home </span>
+          </v-btn>
 
-        <v-btn value="katalog" @click="pindahPage(2)">
-          <span class="whiteText"> Katalog </span>
-        </v-btn>
+          <v-btn value="katalog" @click="pindahPage(2)">
+            <span class="whiteText"> Katalog </span>
+          </v-btn>
 
-        <v-btn value="profil" @click="pindahPage(3)">
-          <span class="whiteText"> Profil </span>
-        </v-btn>
+          <v-btn value="profil" @click="pindahPage(3)">
+            <span class="whiteText"> Profil </span>
+          </v-btn>
 
-        <v-btn value="geo" @click="pindahPage(4)">
-          <span class="whiteText"> Find Us </span>
-        </v-btn>
-
-
-      </v-btn-toggle>
-      <V-Spacer />
-
-      <v-btn v-if="!login" rounded @click="pindahPage(5)">Login/Register</v-btn>
-       <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
+          <v-btn value="geo" @click="pindahPage(5)">
+            <span class="whiteText"> Find Us </span>
+          </v-btn>
+        </v-btn-toggle>
+      </v-flex>
+      <v-btn router-link to="/login">Login/Register</v-btn>
     </v-app-bar>
 
     <v-card>
@@ -51,7 +50,7 @@
           flat
           style="margin-top: 10%; background: rgba(0, 0, 0, 0)"
         >
-              <v-toolbar dense width="50%" style="margin-start: 26%">
+          <v-toolbar dense width="50%" style="margin-start: 26%">
             <v-text-field
               hide-details
               label="Cari Buku"
@@ -72,15 +71,26 @@
               single-line
             ></v-select>
           </v-toolbar>
-         <v-data-table :headers="headers" :items="tableItems"  :search="search" dense width="50%" style="margin-start: 26%;margin-end:24%">
-             <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small color="brown" class="mr-2" @click="pinjamBuku(item.id)">
-            Pinjam
-          </v-btn>
-        </template>
-         </v-data-table>
+          <v-data-table
+            :headers="headers"
+            :items="tableItems"
+            :search="search"
+            dense
+            width="50%"
+            style="margin-start: 26%; margin-end: 24%"
+          >
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-btn
+                small
+                color="brown"
+                class="mr-2"
+                @click="pinjamBuku(item.id)"
+              >
+                Pinjam
+              </v-btn>
+            </template>
+          </v-data-table>
         </v-card>
-
       </v-img>
     </v-card>
 
@@ -109,24 +119,24 @@ export default {
     peminjam: "",
     snackbar: false,
     error_message: "",
-    search:'',
+    search: "",
     color: "",
-    login:false,
-    user:[],
-    filter:'',
+    login: false,
+    user: [],
+    filter: "",
     headers: [
-        {
-          text: "ISBN",
-          align: "start",
-          sortable: true,
-          value: "ISBN",
-        },
-        { text: "Judul Buku", value: "Judul" },
-        { text: "Pengarang", value: "pengarang" },
-        { text: "Kategori", value: "kategori" },
-        { text: "Tahun Terbit", value: "tahun" },
-        { text: "Actions", value: "actions" },
-      ],
+      {
+        text: "ISBN",
+        align: "start",
+        sortable: true,
+        value: "ISBN",
+      },
+      { text: "Judul Buku", value: "Judul" },
+      { text: "Pengarang", value: "pengarang" },
+      { text: "Kategori", value: "kategori" },
+      { text: "Tahun Terbit", value: "tahun" },
+      { text: "Actions", value: "actions" },
+    ],
   }),
 
   methods: {
@@ -143,12 +153,11 @@ export default {
         this.$router.push({
           name: "profil",
         });
-
-      } else if(nomor == 4){
+      } else if (nomor == 4) {
         this.$router.push({
-          name:'geo'
-        })
-      }else {
+          name: "geo",
+        });
+      } else {
         this.$router.push({
           name: "login",
         });
@@ -183,7 +192,7 @@ export default {
           this.error_message = response.data.message;
           this.color = "green";
           this.snackbar = true;
-          this.pinjam = response.data.data
+          this.pinjam = response.data.data;
         });
 
       var currentDateWithFormat = new Date()
@@ -217,41 +226,44 @@ export default {
         });
     },
 
-      accLogout(){
-        localStorage.removeItem("token");
-        localStorage.removeItem("id");
-        console.log(localStorage.getItem("token"));
-        delete this.$http.defaults.headers.common["Authorization"];
-        console.log(this.$http.defaults.headers.common["Authorization"]);
-        this.$router.push({
-          path: "/login",
-        });
-      }
+    accLogout() {
+      localStorage.removeItem("token");
+      localStorage.removeItem("id");
+      console.log(localStorage.getItem("token"));
+      delete this.$http.defaults.headers.common["Authorization"];
+      console.log(this.$http.defaults.headers.common["Authorization"]);
+      this.$router.push({
+        path: "/login",
+      });
+    },
   },
   computed: {
     filteredItems() {
-
       return this.books.filter((i) => {
-        return !this.filter || (i.kategori === this.filter);
-      })
+        return !this.filter || i.kategori === this.filter;
+      });
     },
-     tableItems () {
+    tableItems() {
       if (!this.filter) {
         return this.books;
       }
 
-      return this.books.filter(item => item.kategori.indexOf(this.filter) > -1)
-    }
+      return this.books.filter(
+        (item) => item.kategori.indexOf(this.filter) > -1
+      );
+    },
   },
   mounted() {
-        this.$http.get(this.$api + '/user',
-        {headers: {
-                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
-                }})
-          .then(response=>{
-           this.login = true;
-           this.user=response
-          })
+    this.$http
+      .get(this.$api + "/user", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        this.login = true;
+        this.user = response;
+      });
     this.readData();
   },
 };
