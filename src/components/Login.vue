@@ -12,17 +12,30 @@
         <h3 style="color: white">Perpustakaan Tadika Mesra</h3>
         <V-Spacer />
         <v-btn-toggle tile color="white accent-3" rounded group>
-          <v-btn value="home">
-            <span class="whiteText"> Home </span>
-          </v-btn>
+          <v-btn value="home" @click="pindahPage(1)">
+          <span class="whiteText">
+            Home
+          </span>
+        </v-btn>
 
-          <v-btn value="katalog">
-            <span class="whiteText"> Katalog </span>
-          </v-btn>
 
-          <v-btn value="profil">
-            <span class="whiteText"> Profil </span>
-          </v-btn>
+        <v-btn value="katalog" @click="pindahPage(2)">
+          <span class="whiteText">
+            Katalog
+          </span>
+        </v-btn>
+    
+        <v-btn value="profil" @click="pindahPage(3)">
+          <span class="whiteText">
+            Profil
+          </span>
+        </v-btn>
+
+        <v-btn value="geo" @click="pindahPage(5)">
+          <span class="whiteText">
+            Find Us
+          </span>
+        </v-btn>
         </v-btn-toggle>
         <V-Spacer />
 
@@ -219,6 +232,30 @@ export default {
     };
   },
   methods: {
+    pindahPage(nomor) {
+      if (nomor == 1) {
+        this.$router.push({
+          name: "index",
+        });
+      } else if (nomor == 2) {
+        this.$router.push({
+          name: "katalog",
+        });
+      } else if (nomor == 3) {
+        this.$router.push({
+          name: "profil",
+        });
+
+      } else if(nomor == 4){
+        this.$router.push({
+          name:'geo'
+        })
+      }else {
+        this.$router.push({
+          name: "login",
+        });
+      }
+    },
     submit() {
       if (this.$refs.formlogin.validate()) {
         //cek apakah data yang akan dikirim sudah valid;

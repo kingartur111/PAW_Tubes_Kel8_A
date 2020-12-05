@@ -11,28 +11,33 @@
         <v-avatar color="primary" size="40" tile></v-avatar>
         <h3 style="color: white">Perpustakaan Tadika Mesra</h3>
         <V-Spacer />
-        <v-btn-toggle tile color="white accent-3" rounded group>
-          <v-btn value="home">
-            <span class="whiteText"> Home </span>
-          </v-btn>
-
-          <v-btn value="katalog">
-            <span class="whiteText"> Katalog </span>
-          </v-btn>
-
-          <v-btn value="profil">
-            <span class="whiteText"> Profil </span>
-          </v-btn>
-
-          <v-btn value="profil" @click="pindahPage(5)">
-          <span class="whiteText">
-            Find Us
-          </span>
+       <v-btn-toggle
+        v-model="navbarBtn"
+        tile
+        color="white accent-3"
+        rounded
+        group
+      >
+        <v-btn value="home" @click="pindahPage(1)">
+          <span class="whiteText"> Home </span>
         </v-btn>
-        </v-btn-toggle>
+
+        <v-btn value="katalog" @click="pindahPage(2)">
+          <span class="whiteText"> Katalog </span>
+        </v-btn>
+
+        <v-btn value="profil" @click="pindahPage(3)">
+          <span class="whiteText"> Profil </span>
+        </v-btn>
+
+        <v-btn value="geo" @click="pindahPage(4)">
+          <span class="whiteText"> Find Us </span>
+        </v-btn>
+      </v-btn-toggle>
         <V-Spacer />
 
-        <v-btn rounded>Login/Register</v-btn>
+        <v-btn v-if="!login" rounded @click="pindahPage(5)">Login/Register</v-btn>
+       <v-btn v-else rounded color="error" @click="accLogout()">Logout</v-btn>
       </v-app-bar>
 
       <v-card>
@@ -95,112 +100,59 @@ export default {
   name: "Login",
   data() {
     return {
-      load: false,
-      snackbar: false,
-      error_message: "",
-      toogleLogin: true,
-      color: "",
-      valid: false,
-      password: "",
-      email: "",
-      namaRules: [(v) => !!v || "Nama tidak boleh kosong "],
-      passwordRules: [(v) => !!v || "Password tidak boleh kosong "],
-      emailRules: [(v) => !!v || "E-mail tidak boleh kosong"],
-      regisData: {
-        nama: "",
-        email: "",
-        pass: "",
-
-        conPass: "",
-      },
-    };
-  },
+      navbarBtn: 'geo',
+      sticky: false,
+      login:'',
+      user:[]
+      }
+    },
   methods: {
-    submit() {
-      if (this.$refs.formlogin.validate()) {
-        //cek apakah data yang akan dikirim sudah valid;
-        this.load = true;
-        this.$http
-          .post(this.$api + "/login", {
-            email: this.email,
-            password: this.password,
-          })
-          .then((response) => {
-            localStorage.setItem("id", response.data.user.id); //menyimpan id user yang sedang login
-            localStorage.setItem("token", response.data.access_token);
-            //menyimpan auth token
-            this.error_message = response.data.message;
-            this.color = "green";
-            this.snackbar = true;
-            this.load = false;
-            this.clear();
-            if(response.data.user.status == "admin"){
-              this.$router.push({
-              path: "/dashboard",
-            });
-            }else{
-              this.$router.push({
-              path: "/index",
-            });
-            }
 
-            console.log("test");
-          })
-          .catch((error) => {
-            this.error_message = error.response;
-            this.color = "red";
-            this.snackbar = true;
-            localStorage.removeItem("token");
-            this.load = false;
-            console.log(error.response);
-          });
-      }
-    },
-    submitReg() {
-      if (this.$refs.formReg.validate()) {
-        if (this.regisData.pass == this.regisData.conPass) {
-          this.load = true;
-          this.$http
-            .post(this.$api + "/register", {
-              name: this.regisData.nama,
-              email: this.regisData.email,
-              password: this.regisData.pass,
-            })
-            .then((response) => {
-              this.error_message = response.data.message;
-              this.color = "green";
-              this.snackbar = true;
-              this.load = false;
-              this.toogleLogin = true;
-              console.log(this.email);
-              console.log("test");
-            })
-            .catch((error) => {
-              this.error_message = error.response;
-              this.color = "red";
-              this.snackbar = true;
-              this.load = false;
+      accLogout(){
+        localStorage.removeItem("token");
+        localStorage.removeItem("id");
+        console.log(localStorage.getItem("token"));
+        delete this.$http.defaults.headers.common["Authorization"];
+        console.log(this.$http.defaults.headers.common["Authorization"]);
+        this.$router.push({
+          path: "/login",
+        });
+      },
+       pindahPage(nomor) {
+      if (nomor == 1) {
+        this.$router.push({
+          name: "index",
+        });
+      } else if (nomor == 2) {
+        this.$router.push({
+          name: "katalog",
+        });
+      } else if (nomor == 3) {
+        this.$router.push({
+          name: "profil",
+        });
 
-              console.log(error.response);
-            });
-        } else {
-          this.error_message = "Password Tidak Sama";
-          this.color = "red";
-          this.snackbar = true;
-          this.load = false;
-        }
+      } else if(nomor == 4){
+        this.$router.push({
+          name:'geoloc'
+        })
+      }else {
+        this.$router.push({
+          name: "login",
+        });
       }
-    },
-    clear() {
-      this.$refs.formlogin.reset(); //Clear form login
-    },
-    clearRegForm() {
-      this.regisData.nama = "";
-      this.regisData.email = "";
-      this.regisData.pass = "";
-      this.regisData.conPass = "";
     },
   },
+    mounted(){
+    this.$http.get(this.$api + '/user',
+        {headers: {
+                    "Authorization" : `Bearer ${localStorage.getItem("token")}`
+                }})
+          .then(response=>{
+           this.login = true;
+           this.user=response
+          })
+  }
 };
 </script>
 

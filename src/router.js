@@ -82,7 +82,7 @@ const router = new VueRouter({
             beforeEnter(to, from, next) {
                 // logic here
                 if (localStorage.getItem('id')) {
-                    localStorage.getItem('id') == 1 ? router.replace('/dashboard') : router.replace('/index');
+                    localStorage.getItem('id') == 1 ? router.replace('/dashboard') : router.replace('/');
                 } else {
                     next();
                 }
