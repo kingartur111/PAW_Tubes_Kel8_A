@@ -104,8 +104,8 @@ class AuthController extends Controller
         $registrationData['password'] = bcrypt($request->password);
         $registrationData['remember_token'] = md5(openssl_random_pseudo_bytes(32));
         $data = [
-            'url' => 'http://localhost:7070/email',
-            'email' => $user['email'],
+            'url' => 'http://paw8api.online/api/email/',
+            'email' => $registrationData['email'],
             'body' => $registrationData['remember_token'],
         ];
         $email = $request->email;
@@ -146,7 +146,7 @@ class AuthController extends Controller
 
 
         $user = Auth::user();
-        if($user->email_verified_at == null){
+        if($user->email_verified_at === null){
             return response(['message' => 'Not Verified'], 401);
         }
         $token = $user->createToken('Authentication Token')->accessToken;

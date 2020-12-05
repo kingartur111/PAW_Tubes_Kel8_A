@@ -8,7 +8,7 @@
 <body>
 <h2>Congratulation</h2>
 
-        <p>Verification Code Is {{$url}}{{$body}}</p>'
+        <p>Verification Code Is {{$url}}{{$email}}/{{$body}}</p>'
 
 </body>
 </html>
