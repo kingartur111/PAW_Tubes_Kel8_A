@@ -157,7 +157,7 @@
               <v-snackbar
                 v-model="snackbar"
                 :color="color"
-                timeout="2000"
+                timeout="20000"
                 bottom
               >
                 {{ error_message }}
@@ -168,7 +168,6 @@
       </v-card>
     </div>
   </main>
-  
 </template>
 
 <style>
@@ -238,14 +237,14 @@ export default {
             this.snackbar = true;
             this.load = false;
             this.clear();
-            if(response.data.user.status == "admin"){
-              this.$router.push({
-              path: "/dashboard",
-            });
-            }else{
-              this.$router.push({
-              path: "/index",
-            });
+            if (response.data.user.status == "admin") {
+              this.$router.replace({
+                path: "/dashboard",
+              });
+            } else {
+              this.$router.replace({
+                path: "/index",
+              });
             }
 
             console.log("test");
@@ -285,7 +284,7 @@ export default {
               this.snackbar = true;
               this.load = false;
 
-              console.log(error.response);
+              console.log(error.response.message);
             });
         } else {
           this.error_message = "Password Tidak Sama";
